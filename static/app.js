@@ -326,12 +326,21 @@ function updateUserUI() {
 // NAVIGATION & TAB CONTROLLER
 // ==========================================
 
+function openMobileSidebar() {
+    document.getElementById("app-sidebar")?.classList.add("open");
+    document.getElementById("sidebar-backdrop")?.classList.add("active");
+}
+
+function closeMobileSidebar() {
+    document.getElementById("app-sidebar")?.classList.remove("open");
+    document.getElementById("sidebar-backdrop")?.classList.remove("active");
+}
+
 function switchTab(tabId) {
     currentTab = tabId;
     
-    // Close mobile sidebar if open
-    const sidebar = document.getElementById("app-sidebar");
-    if (sidebar) sidebar.classList.remove("open");
+    // Close mobile sidebar and backdrop if open
+    closeMobileSidebar();
     
     // Update sidebar nav link states
     document.querySelectorAll(".sidebar-nav .nav-link-item").forEach(link => {
@@ -339,6 +348,15 @@ function switchTab(tabId) {
             link.classList.add("active");
         } else {
             link.classList.remove("active");
+        }
+    });
+
+    // Update mobile bottom nav button states
+    document.querySelectorAll("#mobile-bottom-nav .mobile-nav-btn").forEach(btn => {
+        if (btn.getAttribute("data-tab") === tabId) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
         }
     });
     
@@ -1518,6 +1536,8 @@ function renderTasksList() {
     
     const sidebarCountEl = document.getElementById("sidebar-task-count");
     if (sidebarCountEl) sidebarCountEl.textContent = activeCount;
+    const mobileBottomCountEl = document.getElementById("mobile-bottom-task-count");
+    if (mobileBottomCountEl) mobileBottomCountEl.textContent = activeCount;
 
     // Filter tasks
     let filtered = cachedTasks;
@@ -1815,6 +1835,8 @@ function renderDashboardTasks() {
 
     const sidebarCountEl = document.getElementById("sidebar-task-count");
     if (sidebarCountEl) sidebarCountEl.textContent = pendingTasks.length;
+    const mobileBottomCountEl = document.getElementById("mobile-bottom-task-count");
+    if (mobileBottomCountEl) mobileBottomCountEl.textContent = pendingTasks.length;
 
     // Filter today's tasks + carried tasks + active ongoing goals
     const todayList = cachedTasks.filter(t => !t.is_completed && (
@@ -4455,12 +4477,9 @@ function setupEventListeners() {
     });
 
     // Mobile Sidebar Drawer
-    document.getElementById("mobile-sidebar-toggle")?.addEventListener("click", () => {
-        document.getElementById("app-sidebar")?.classList.add("open");
-    });
-    document.getElementById("sidebar-close-btn")?.addEventListener("click", () => {
-        document.getElementById("app-sidebar")?.classList.remove("open");
-    });
+    document.getElementById("mobile-sidebar-toggle")?.addEventListener("click", openMobileSidebar);
+    document.getElementById("sidebar-close-btn")?.addEventListener("click", closeMobileSidebar);
+    document.getElementById("sidebar-backdrop")?.addEventListener("click", closeMobileSidebar);
 
     // AI Chat
     document.getElementById("chat-submit-form")?.addEventListener("submit", handleChatSubmit);
@@ -4619,4 +4638,6 @@ window.promptDeleteTask = promptDeleteTask;
 window.deleteTaskFromModal = deleteTaskFromModal;
 window.executeConfirmedDelete = executeConfirmedDelete;
 window.deleteTask = deleteTask;
+window.openMobileSidebar = openMobileSidebar;
+window.closeMobileSidebar = closeMobileSidebar;
 

@@ -3768,5 +3768,294 @@ body.theme-dark .cal-day-cell.has-schedule-session {
     color: var(--text-muted);
 }
 
+/* ==========================================================================
+   MOBILE NATIVE APP EXPERIENCE (iPhone & Android)
+   ========================================================================== */
+
+/* 1. Global Viewport & Safe-Area Constraints */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 2. Mobile Sidebar Overlay Backdrop */
+.sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+.sidebar-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 3. Native Mobile Bottom Navigation Bar */
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 1020;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.45);
+}
+body.theme-light .mobile-bottom-nav {
+    background: rgba(255, 255, 255, 0.94);
+    border-top-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.08);
+}
+.mobile-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    gap: 3px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    user-select: none;
+}
+.mobile-nav-btn i {
+    font-size: 1.15rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+.mobile-nav-btn.active {
+    color: var(--accent-blue);
+}
+.mobile-nav-btn.active i {
+    color: var(--accent-blue);
+    transform: translateY(-2px);
+}
+.mobile-nav-badge {
+    position: absolute;
+    top: 2px;
+    right: 6px;
+    background: var(--accent-rose);
+    color: white;
+    font-size: 0.62rem;
+    font-weight: 750;
+    padding: 1px 5px;
+    border-radius: 99px;
+    min-width: 16px;
+    text-align: center;
+    box-shadow: 0 0 6px rgba(244, 63, 94, 0.5);
+}
+/* Center Floating Action Button (FAB) */
+.mobile-nav-fab {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    color: white;
+    border: 3px solid rgba(15, 23, 42, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 18px rgba(56, 189, 248, 0.45);
+    margin-top: -18px;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+body.theme-light .mobile-nav-fab {
+    border-color: rgba(255, 255, 255, 0.95);
+}
+.mobile-nav-fab:active {
+    transform: scale(0.9);
+}
+
+/* 4. Comprehensive Breakpoint Rules (<= 991.98px) */
+@media (max-width: 991.98px) {
+    .app-main-content {
+        margin-left: 0 !important;
+        padding: 14px 14px 92px 14px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    .mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 995;
+        padding: 10px 16px;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-glass);
+    }
+    body.theme-light .mobile-header {
+        background: rgba(255, 255, 255, 0.95);
+    }
+}
+
+/* 5. Smartphone Breakpoint Rules (<= 768px) */
+@media (max-width: 768px) {
+    /* Headings & Panel Titles */
+    .panel-main-title {
+        font-size: 1.35rem !important;
+    }
+    .panel-main-sub {
+        font-size: 0.8rem !important;
+        line-height: 1.35 !important;
+    }
+    .panel-header-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    /* Tasks Header & Filter Pills */
+    .task-filter-pills {
+        display: flex !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        padding-bottom: 6px !important;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px !important;
+    }
+    .task-pill {
+        flex-shrink: 0 !important;
+        font-size: 0.74rem !important;
+        padding: 6px 11px !important;
+    }
+
+    /* Task Cards */
+    .task-item-card {
+        padding: 11px 12px !important;
+        gap: 10px !important;
+        border-radius: var(--radius-md) !important;
+    }
+    .task-title-text {
+        font-size: 0.95rem !important;
+        word-break: break-word !important;
+    }
+    .task-meta-row {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        font-size: 0.7rem !important;
+    }
+
+    /* Calendar Grid on Mobile (Prevent horizontal stretching) */
+    .calendar-days-grid {
+        gap: 2px !important;
+        padding-top: 6px !important;
+    }
+    .cal-day-cell {
+        min-height: 40px !important;
+        padding: 3px !important;
+        border-radius: 6px !important;
+    }
+    .cal-day-num {
+        font-size: 0.72rem !important;
+    }
+    .calendar-weekdays-row {
+        font-size: 0.7rem !important;
+        padding-bottom: 6px !important;
+    }
+    .cal-task-dot {
+        width: 4px !important;
+        height: 4px !important;
+    }
+
+    /* Schedule / Timetable Routine Strip & Capsule */
+    .schedule-nav-capsule {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding: 3px !important;
+        justify-content: flex-start !important;
+    }
+    .sched-capsule-btn {
+        padding: 6px 12px !important;
+        font-size: 0.78rem !important;
+        flex-shrink: 0 !important;
+    }
+    .schedule-top-summary-bar {
+        padding: 12px 14px !important;
+    }
+    .schedule-top-summary-bar .d-flex {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+    .week-calendar-strip {
+        gap: 8px !important;
+        padding-bottom: 10px !important;
+    }
+    .week-strip-card {
+        min-width: 125px !important;
+        padding: 10px !important;
+    }
+
+    /* Dashboard Metrics Grid */
+    .row.g-3 {
+        --bs-gutter-x: 10px !important;
+        --bs-gutter-y: 10px !important;
+    }
+    .card-panel {
+        padding: 14px 16px !important;
+        border-radius: var(--radius-lg) !important;
+    }
+
+    /* Chat Full-Screen Layout on Mobile */
+    .chat-layout-wrapper {
+        height: calc(100vh - 150px) !important;
+        padding: 6px !important;
+    }
+    .chat-message-row {
+        max-width: 92% !important;
+    }
+    .chat-input-row {
+        padding: 8px !important;
+        gap: 8px !important;
+    }
+    .prompt-suggestions-row {
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        padding-bottom: 4px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Modals Responsive */
+    .modal-dialog {
+        margin: 12px !important;
+        max-width: calc(100vw - 24px) !important;
+    }
+    .modal-content {
+        padding: 16px !important;
+        border-radius: var(--radius-lg) !important;
+    }
+    .modal-header, .modal-footer {
+        padding: 10px 0 !important;
+    }
+}
+
+
 
 
