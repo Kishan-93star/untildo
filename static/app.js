@@ -8,7 +8,7 @@ const API_BASE = "/api";
 let currentUser = null;
 let currentToken = localStorage.getItem("untildo_token") || localStorage.getItem("aether_token") || null;
 let currentTab = "planner";
-let globalTheme = localStorage.getItem("untildo_theme") || localStorage.getItem("aether_theme") || "dark";
+let globalTheme = localStorage.getItem("untildo_theme") || "light";
 
 // Helper: Local date string YYYY-MM-DD
 function getLocalDateString(d = new Date()) {
@@ -57,7 +57,7 @@ function initTheme() {
 
 function setTheme(theme) {
     globalTheme = theme;
-    localStorage.setItem("aether_theme", theme);
+    localStorage.setItem("untildo_theme", theme);
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.setAttribute("data-bs-theme", theme);
     document.body.className = `theme-${theme}`;
@@ -4640,4 +4640,18 @@ window.executeConfirmedDelete = executeConfirmedDelete;
 window.deleteTask = deleteTask;
 window.openMobileSidebar = openMobileSidebar;
 window.closeMobileSidebar = closeMobileSidebar;
+
+// iOS Standalone PWA Mode Helper
+if (("standalone" in window.navigator) && window.navigator.standalone) {
+    document.addEventListener("click", function(e) {
+        let node = e.target;
+        while (node && node.nodeName !== "A" && node.nodeName !== "HTML") {
+            node = node.parentNode;
+        }
+        if (node && node.nodeName === "A" && node.getAttribute("href") && !node.getAttribute("target") && node.href.indexOf(location.host) !== -1) {
+            e.preventDefault();
+            window.location = node.href;
+        }
+    }, false);
+}
 

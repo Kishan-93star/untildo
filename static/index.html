@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-bs-theme="dark">
+<html lang="en" data-theme="light" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="UntilDo">
-    <meta name="theme-color" content="#0b0f19">
+    <meta name="theme-color" content="#ffffff">
     <title>UntilDo — Smart Daily Tasks, Projects & AI Knowledge Suite</title>
     
     <!-- Google Fonts -->
@@ -24,12 +24,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     
     <link rel="icon" type="image/x-icon" href="favicon.ico?v=3.7">
-    <link rel="apple-touch-icon" href="app_icon.png?v=3.7">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="app_icon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="app_icon.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="app_icon.png">
     
     <!-- Custom Stylesheet (with cache-busting version) -->
-    <link rel="stylesheet" href="style.css?v=4.0">
+    <link rel="stylesheet" href="style.css?v=4.1">
 </head>
-<body class="theme-dark">
+<body class="theme-light">
 
     <!-- Notification Toast -->
     <div id="toast" class="toast-notification hidden" role="alert" aria-live="assertive" aria-atomic="true">
@@ -1317,12 +1320,12 @@
                             <p class="text-muted small mb-4">Switch between sleek Glassmorphic Dark Mode and clean Bright Light Mode.</p>
 
                             <div class="theme-selection-grid mb-4">
-                                <button type="button" class="theme-choice-card active" id="theme-btn-dark" onclick="setTheme('dark')">
+                                <button type="button" class="theme-choice-card" id="theme-btn-dark" onclick="setTheme('dark')">
                                     <i class="fa-solid fa-moon theme-choice-icon"></i>
                                     <h4>Dark Mode</h4>
                                     <p>Vibrant glowing glassmorphism</p>
-                                </button>
-                                <button type="button" class="theme-choice-card" id="theme-btn-light" onclick="setTheme('light')">
+                                								</button>
+                                <button type="button" class="theme-choice-card active" id="theme-btn-light" onclick="setTheme('light')">
                                     <i class="fa-solid fa-sun theme-choice-icon"></i>
                                     <h4>Light Mode</h4>
                                     <p>High contrast daytime clarity</p>
@@ -1669,6 +1672,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Application Logic (with cache-busting version) -->
-    <script src="app.js?v=4.3"></script>
+    <script src="app.js?v=4.4"></script>
 </body>
 </html>

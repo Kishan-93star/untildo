@@ -1,0 +1,25 @@
+{
+  "name": "UntilDo — Smart Daily Tasks & AI Knowledge Suite",
+  "short_name": "UntilDo",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "description": "Smart Daily Tasks, Projects & AI Knowledge Suite",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "app_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "app_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
