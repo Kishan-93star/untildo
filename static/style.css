@@ -498,8 +498,18 @@ select.custom-input option,
    ========================================== */
 .app-layout {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
     background: var(--bg-base);
+    width: 100%;
+    overflow-x: hidden;
+}
+
+@media (min-width: 992px) {
+    .app-layout {
+        flex-direction: row;
+        overflow-x: visible;
+    }
 }
 
 /* Sidebar */
@@ -722,10 +732,20 @@ select.custom-input option,
 /* App Main Content Area */
 .app-main-content {
     flex: 1;
-    margin-left: 280px;
-    padding: 24px 32px;
-    max-width: 1600px;
+    margin-left: 0;
+    padding: 14px 14px 88px 14px;
+    width: 100%;
+    max-width: 100%;
     min-height: 100vh;
+    box-sizing: border-box;
+}
+
+@media (min-width: 992px) {
+    .app-main-content {
+        margin-left: 280px;
+        padding: 24px 32px;
+        max-width: 1600px;
+    }
 }
 
 /* Top Navbar (Desktop) */
@@ -2966,7 +2986,12 @@ body.theme-dark .cal-day-cell.has-schedule-session {
     justify-content: space-between;
     position: sticky;
     top: 0;
-    z-index: 999;
+    left: 0;
+    right: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 995;
+    flex-shrink: 0;
 }
 .mobile-menu-toggle, .theme-toggle-btn-small {
     background: var(--bg-input);
