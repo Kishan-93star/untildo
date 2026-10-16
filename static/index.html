@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UntilDo — Smart Daily Tasks, Projects & AI Knowledge Suite</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6.5.2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Chart.js 4.4.2 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=3.7">
+    <link rel="apple-touch-icon" href="app_icon.png?v=3.7">
+    
+    <!-- Custom Stylesheet (with cache-busting version) -->
+    <link rel="stylesheet" href="style.css?v=3.8">
+</head>
+<body class="theme-dark">
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast-notification hidden" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-content">
+            <i id="toast-icon" class="fa-solid fa-circle-info toast-icon"></i>
+            <span id="toast-message">Notification message</span>
+        </div>
+        <button type="button" class="toast-close" onclick="document.getElementById('toast').classList.add('hidden')">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <!-- ==========================================
+         AUTHENTICATION SECTION (Logged Out)
+         ========================================== -->
+    <div id="auth-container" class="auth-wrapper">
+        <div class="auth-background-effects">
+            <div class="glow-orb orb-1"></div>
+            <div class="glow-orb orb-2"></div>
+            <div class="glow-orb orb-3"></div>
+        </div>
+
+        <div class="auth-card-container">
+            <div class="auth-card glassmorphism">
+                <div class="auth-header text-center">
+                    <div class="brand-badge mb-3">
+                        <svg class="brand-logo-svg brand-logo-lg mx-auto" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="untildo-grad-lg" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#3b82f6" />
+                                    <stop offset="50%" stop-color="#8b5cf6" />
+                                    <stop offset="100%" stop-color="#06b6d4" />
+                                </linearGradient>
+                                <linearGradient id="untildo-glow-lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#38bdf8" />
+                                    <stop offset="100%" stop-color="#a855f7" />
+                                </linearGradient>
+                            </defs>
+                            <rect x="3" y="3" width="26" height="26" rx="8" stroke="url(#untildo-grad-lg)" stroke-width="2.5" fill="rgba(59, 130, 246, 0.12)" />
+                            <path d="M10 16.5L14 20.5L22 11.5" stroke="url(#untildo-glow-lg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="22" cy="11.5" r="1.5" fill="#38bdf8" />
+                        </svg>
+                    </div>
+                    <h1 class="brand-title">Until<span class="gradient-text">Do</span></h1>
+                    <p class="brand-tagline">Smart Daily Rollover Tasks, Projects & Next-Gen AI Knowledge Suite</p>
+                </div>
+
+                <!-- Auth Navigation Pills -->
+                <div class="auth-pills-container">
+                    <button class="auth-pill-btn active" id="pill-login" onclick="switchAuthForm('login')">
+                        <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>Log In
+                    </button>
+                    <button class="auth-pill-btn" id="pill-signup" onclick="switchAuthForm('signup')">
+                        <i class="fa-solid fa-user-plus me-2"></i>Create Account
+                    </button>
+                </div>
+
+                <!-- LOGIN FORM -->
+                <form id="login-form" class="auth-form active" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control custom-input" id="login-username" placeholder="Username" required autocomplete="username">
+                        <label for="login-username"><i class="fa-solid fa-user me-2"></i>Username</label>
+                        <div class="invalid-feedback">Please enter your username.</div>
+                    </div>
+
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" class="form-control custom-input" id="login-password" placeholder="Password" required autocomplete="current-password">
+                        <label for="login-password"><i class="fa-solid fa-lock me-2"></i>Password</label>
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('login-password', this)">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <div class="invalid-feedback">Please enter your password.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check custom-checkbox">
+                            <input class="form-check-input" type="checkbox" id="remember-me" checked>
+                            <label class="form-check-label" for="remember-me">Remember session</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-gradient w-100 py-3 mb-3 fw-bold" id="login-submit-btn">
+                        <span>Sign In</span>
+                        <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </button>
+                    
+                    <p class="auth-footer-text text-center">
+                        Need an account? <a href="javascript:void(0)" onclick="switchAuthForm('signup')" class="auth-link">Register now</a>
+                    </p>
+                </form>
+
+                <!-- SIGNUP FORM -->
+                <form id="signup-form" class="auth-form" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control custom-input" id="signup-username" placeholder="Choose a username" required minlength="3" autocomplete="username">
+                        <label for="signup-username"><i class="fa-solid fa-user me-2"></i>Username (min 3 chars)</label>
+                        <div class="invalid-feedback" id="signup-user-feedback">Username must be at least 3 characters.</div>
+                    </div>
+
+                    <div class="form-floating mb-2 position-relative">
+                        <input type="password" class="form-control custom-input" id="signup-password" placeholder="Create password" required minlength="4" autocomplete="new-password">
+                        <label for="signup-password"><i class="fa-solid fa-lock me-2"></i>Password</label>
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('signup-password', this)">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <div class="invalid-feedback">Password must be at least 4 characters.</div>
+                    </div>
+
+                    <!-- Password Strength Meter -->
+                    <div class="password-strength-container mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="strength-label">Security Strength:</span>
+                            <span class="strength-text" id="strength-text">None</span>
+                        </div>
+                        <div class="strength-bar-bg">
+                            <div class="strength-bar-fill" id="strength-bar-fill"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-4 position-relative">
+                        <input type="password" class="form-control custom-input" id="signup-confirm-password" placeholder="Confirm password" required autocomplete="new-password">
+                        <label for="signup-confirm-password"><i class="fa-solid fa-shield-halved me-2"></i>Confirm Password</label>
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('signup-confirm-password', this)">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <div class="invalid-feedback" id="signup-match-feedback">Passwords do not match.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-gradient w-100 py-3 mb-3 fw-bold" id="signup-submit-btn">
+                        <span>Create Account</span>
+                        <i class="fa-solid fa-user-check ms-2"></i>
+                    </button>
+                    
+                    <p class="auth-footer-text text-center">
+                        Already have an account? <a href="javascript:void(0)" onclick="switchAuthForm('login')" class="auth-link">Sign In</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MAIN APPLICATION SECTION (Logged In)
+         ========================================== -->
+    <div id="app-container" class="app-layout hidden">
+        
+        <!-- Mobile Header Bar -->
+        <header class="mobile-header d-lg-none">
+            <button class="mobile-menu-toggle" id="mobile-sidebar-toggle" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+            <div class="mobile-brand d-flex align-items-center">
+                <svg class="brand-logo-svg brand-logo-sm me-2" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="3" width="26" height="26" rx="8" stroke="#38bdf8" stroke-width="2.5" fill="rgba(56, 189, 248, 0.15)" />
+                    <path d="M10 16.5L14 20.5L22 11.5" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="brand-name">Until<span class="gradient-text">Do</span></span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <div class="mobile-streak-pill" onclick="switchTab('profile')" title="Daily Streak">
+                    <i class="fa-solid fa-fire text-warning"></i>
+                    <span id="mobile-nav-streak">1</span>d
+                </div>
+                <button class="theme-toggle-btn-small" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <i class="fa-solid fa-sun light-icon"></i>
+                    <i class="fa-solid fa-moon dark-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar Navigation Drawer -->
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <div class="brand-icon-box">
+                        <svg class="brand-logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="untildo-sb-grad" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#3b82f6" />
+                                    <stop offset="50%" stop-color="#8b5cf6" />
+                                    <stop offset="100%" stop-color="#06b6d4" />
+                                </linearGradient>
+                                <linearGradient id="untildo-sb-glow" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#38bdf8" />
+                                    <stop offset="100%" stop-color="#a855f7" />
+                                </linearGradient>
+                            </defs>
+                            <rect x="3" y="3" width="26" height="26" rx="8" stroke="url(#untildo-sb-grad)" stroke-width="2.5" fill="rgba(59, 130, 246, 0.15)" />
+                            <path d="M10 16.5L14 20.5L22 11.5" stroke="url(#untildo-sb-glow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="22" cy="11.5" r="1.5" fill="#38bdf8" />
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <h2>Until<span class="gradient-text">Do</span></h2>
+                        <span class="badge-pro">PRO SUITE</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn d-lg-none" id="sidebar-close-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">DAILY FOCUS & TASKS</div>
+                <a href="javascript:void(0)" class="nav-link-item active" data-tab="planner">
+                    <i class="fa-solid fa-list-check nav-icon"></i>
+                    <span>Tasks & Daily Carry</span>
+                    <span class="nav-badge" id="sidebar-task-count">0</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-link-item" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-pie nav-icon"></i>
+                    <span>Dashboard</span>
+                    <span class="nav-indicator"></span>
+                </a>
+                <a href="javascript:void(0)" class="nav-link-item" data-tab="schedule">
+                    <i class="fa-solid fa-calendar-check nav-icon"></i>
+                    <span>AI Timetable</span>
+                    <span class="badge-pill-hot">AI</span>
+                </a>
+                
+                <div class="nav-section-title mt-4">AI COPILOT & KNOWLEDGE</div>
+                <a href="javascript:void(0)" class="nav-link-item" data-bs-toggle="collapse" data-bs-target="#ai-knowledge-collapse">
+                    <i class="fa-solid fa-brain nav-icon"></i>
+                    <span>AI Knowledge</span>
+                </a>
+                <div class="collapse show" id="ai-knowledge-collapse">
+                    <a href="javascript:void(0)" class="nav-link-item ms-3" data-tab="chat">
+                        <i class="fa-solid fa-robot nav-icon"></i>
+                        <span>AI Copilot</span>
+                        <span class="badge-pill-hot">AI</span>
+                    </a>
+                    <a href="javascript:void(0)" class="nav-link-item ms-3" data-tab="documents">
+                        <i class="fa-solid fa-folder-open nav-icon"></i>
+                        <span>Document Vault</span>
+                        <span class="nav-badge" id="sidebar-doc-count">0</span>
+                    </a>
+                    <a href="javascript:void(0)" class="nav-link-item ms-3" data-tab="notes">
+                        <i class="fa-solid fa-book-bookmark nav-icon"></i>
+                        <span>Knowledge Notes</span>
+                        <span class="nav-badge" id="sidebar-note-count">0</span>
+                    </a>
+                    <a href="javascript:void(0)" class="nav-link-item ms-3" data-tab="quiz">
+                        <i class="fa-solid fa-circle-question nav-icon"></i>
+                        <span>AI Quizzes & Drills</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section-title mt-4">SETTINGS & USER</div>
+                <a href="javascript:void(0)" class="nav-link-item" data-tab="profile">
+                    <i class="fa-solid fa-id-card nav-icon"></i>
+                    <span>User Profile</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-link-item" data-tab="settings">
+                    <i class="fa-solid fa-sliders nav-icon"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <!-- Sidebar User Profile Footer -->
+            <div class="sidebar-footer">
+                <div class="user-profile-widget" onclick="switchTab('profile')">
+                    <div class="avatar-box" id="sidebar-avatar-box">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <div class="user-meta">
+                        <h4 id="sidebar-username">User</h4>
+                        <span class="user-status-text"><i class="fa-solid fa-bolt text-warning me-1"></i><span id="sidebar-streak">1</span>-Day Streak</span>
+                    </div>
+                </div>
+                <div class="sidebar-actions">
+                    <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-sun light-icon"></i>
+                        <i class="fa-solid fa-moon dark-icon"></i>
+                    </button>
+                    <button class="logout-btn" onclick="confirmLogout()" title="Log Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="app-main-content">
+            
+            <!-- Top Navigation Bar (Desktop) -->
+            <div class="top-navbar d-none d-lg-flex">
+                <div class="top-nav-left">
+                    <div class="search-box-global">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="global-search-input" placeholder="Quick search notes, documents, or concepts...">
+                    </div>
+                </div>
+                <div class="top-nav-right">
+                    <!-- Daily Focus Streak Badge -->
+                    <div class="top-nav-streak-pill" onclick="switchTab('profile')" title="Daily Focus Consistency Streak (Click to view profile)">
+                        <i class="fa-solid fa-fire streak-fire-icon"></i>
+                        <span class="streak-count-num" id="top-nav-streak">1</span>
+                        <span class="streak-count-label">d streak</span>
+                    </div>
+
+                    <div class="model-status-chip glassmorphism" id="gemini-status-chip">
+                        <span class="status-dot"></span>
+                        <span id="gemini-status-text">Local NLP Engine</span>
+                    </div>
+                    <button class="btn-icon-nav" onclick="toggleTheme()" title="Toggle Theme">
+                        <i class="fa-solid fa-sun light-icon"></i>
+                        <i class="fa-solid fa-moon dark-icon"></i>
+                    </button>
+                    <div class="profile-dropdown-trigger" onclick="switchTab('profile')">
+                        <div class="avatar-small" id="nav-avatar-box">
+                            <i class="fa-solid fa-user-astronaut"></i>
+                        </div>
+                        <span id="top-nav-username">User</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 1: DASHBOARD (Clean & Focused Layout) -->
+            <section id="tab-dashboard" class="content-tab-panel">
+                
+                <!-- Clean Minimal Header -->
+                <div class="dash-welcome-row mb-4">
+                    <div>
+                        <h1 class="dash-welcome-title">Welcome back, <span class="gradient-text" id="dashboard-user-name">User</span></h1>
+                        <p class="text-muted mb-0">Focus on what matters today. Complete your daily targets or carry them forward.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary-gradient px-3 py-2" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                            <i class="fa-solid fa-plus me-1"></i>New Task
+                        </button>
+                        <button class="btn btn-glass px-3 py-2" onclick="switchTab('chat')">
+                            <i class="fa-solid fa-robot me-1"></i>Ask AI Copilot
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4 Clean Minimal KPI Metric Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-pill-card glassmorphism" onclick="switchTab('planner')" style="cursor: pointer;">
+                            <div class="stat-pill-icon text-accent-blue"><i class="fa-solid fa-list-check"></i></div>
+                            <div>
+                                <span class="stat-pill-num" id="dash-stat-tasks">0</span>
+                                <span class="stat-pill-lbl">Active Tasks</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-pill-card glassmorphism" onclick="switchTab('planner')" style="cursor: pointer;">
+                            <div class="stat-pill-icon text-accent-purple"><i class="fa-solid fa-arrows-rotate"></i></div>
+                            <div>
+                                <span class="stat-pill-num" id="dash-stat-carried">0</span>
+                                <span class="stat-pill-lbl">Carried Today</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-pill-card glassmorphism" onclick="switchTab('notes')" style="cursor: pointer;">
+                            <div class="stat-pill-icon text-accent-emerald"><i class="fa-solid fa-book-bookmark"></i></div>
+                            <div>
+                                <span class="stat-pill-num" id="dash-stat-notes">0</span>
+                                <span class="stat-pill-lbl">Saved Notes</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-pill-card glassmorphism" onclick="switchTab('quiz')" style="cursor: pointer;">
+                            <div class="stat-pill-icon text-accent-amber"><i class="fa-solid fa-bullseye"></i></div>
+                            <div>
+                                <span class="stat-pill-num" id="dash-stat-avg-score">0%</span>
+                                <span class="stat-pill-lbl">Mastery Score</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TODAY'S UNTILDO AGENDA & DAILY CARRY CARD -->
+                <div class="card-panel glassmorphism mb-4" id="dash-tasks-widget">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="panel-title fs-5 mb-0"><i class="fa-solid fa-circle-check text-accent-emerald me-2"></i>Today's Agenda & Daily Carry</h3>
+                                <span class="badge-carried-total py-1 px-2" id="dash-carried-pill">0 Carried</span>
+                            </div>
+                            <p class="text-muted small mb-0">Complete your daily targets. Incomplete tasks carry over until done.</p>
+                        </div>
+                    </div>
+
+                    <!-- Today's Tasks List Container -->
+                    <div class="dash-today-tasks-container" id="dash-today-tasks-list">
+                        <div class="text-center text-muted small py-3"><i class="fa-solid fa-spinner fa-spin me-2"></i>Loading today's tasks...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: AI CHAT (ChatGPT-Style Modern Design) -->
+            <section id="tab-chat" class="content-tab-panel">
+                <div class="chat-layout-wrapper glassmorphism">
+                    
+                    <!-- Chat Top Header -->
+                    <div class="chat-header-bar">
+                        <div class="chat-header-left">
+                            <div class="chat-avatar-ai">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h3 class="chat-assistant-name">UntilDo AI Copilot <span class="badge-ai-online">Online</span></h3>
+                                <p class="chat-assistant-desc">Ask questions, brainstorm tasks, analyze documents, and plan your work, projects, or study sessions.</p>
+                            </div>
+                        </div>
+                        <div class="chat-header-right">
+                            <!-- Agent Mode Selector: Copilot Mentor vs Casual Buddy -->
+                            <div class="chat-mode-toggle-pills">
+                                <button type="button" class="chat-mode-pill active" id="chat-mode-study" onclick="setChatMode('study')" title="Deep Reasoning, Problem Solving & Project Breakdown">
+                                    <i class="fa-solid fa-brain me-1"></i>Copilot Mentor
+                                </button>
+                                <button type="button" class="chat-mode-pill" id="chat-mode-smalltalk" onclick="setChatMode('smalltalk')" title="Concise & Casual Productivity Buddy">
+                                    <i class="fa-solid fa-comments me-1"></i>Casual Buddy
+                                </button>
+                            </div>
+                            
+                            <!-- Document Context Selector -->
+                            <div class="doc-context-select-box">
+                                <i class="fa-solid fa-book-open context-icon"></i>
+                                <select id="chat-doc-context" class="form-select custom-select-sm">
+                                    <option value="">Context: General Knowledge</option>
+                                    <!-- Dynamic document options populated by JS -->
+                                </select>
+                            </div>
+                            <button class="btn btn-sm btn-glass" id="btn-clear-chat" title="Clear Conversation">
+                                <i class="fa-solid fa-trash-can me-1"></i>Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Message Stream Area -->
+                    <div class="chat-messages-stream" id="chat-messages-stream">
+                        <!-- AI Welcome Bubble -->
+                        <div class="chat-message-row ai-row">
+                            <div class="msg-avatar ai-avatar">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="msg-bubble-container">
+                                <div class="msg-author-tag">UntilDo AI</div>
+                                <div class="msg-bubble ai-bubble">
+                                    <p>👋 Hello! I am your <strong>UntilDo AI Copilot</strong>. I'm here to help you break down complex goals into actionable tasks, master difficult subjects, write and debug, and maintain daily momentum.</p>
+                                    <p>You can ask me to:</p>
+                                    <ul>
+                                        <li>Break down projects or goals into daily actionable steps</li>
+                                        <li>Explain technical, business, or academic concepts with clear models</li>
+                                        <li>Analyze uploaded documents or code from the context dropdown</li>
+                                        <li>Generate revision flashcards, quizzes, or structured notes</li>
+                                    </ul>
+                                </div>
+                                <div class="msg-meta-row">
+                                    <span class="msg-time">Just now</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Suggestion Chips -->
+                    <div class="chat-suggestion-chips" id="chat-suggestion-chips">
+                        <button class="chip-btn" onclick="sendSuggestedPrompt('Break down a complex project into daily actionable milestones')">
+                            <i class="fa-solid fa-list-check me-1 text-accent-blue"></i> Break Down Project
+                        </button>
+                        <button class="chip-btn" onclick="sendSuggestedPrompt('Explain the Feynman Technique and how to use it for rapid learning')">
+                            <i class="fa-solid fa-brain me-1 text-accent-purple"></i> Feynman Technique
+                        </button>
+                        <button class="chip-btn" onclick="sendSuggestedPrompt('Explain the 25/5 Pomodoro routine for deep focus')">
+                            <i class="fa-solid fa-stopwatch me-1 text-accent-emerald"></i> Pomodoro Routine
+                        </button>
+                        <button class="chip-btn" onclick="sendSuggestedPrompt('Create 3 active recall cards or knowledge checks for my topic')">
+                            <i class="fa-solid fa-layer-group me-1 text-accent-amber"></i> Knowledge Cards
+                        </button>
+                    </div>
+
+                    <!-- Chat Input Row -->
+                    <div class="chat-input-container">
+                        <form id="chat-submit-form" class="chat-input-form">
+                            <textarea id="chat-user-input" class="chat-textarea" placeholder="Ask anything, paste notes, or ask for explanations... (Press Enter to send, Shift+Enter for new line)" rows="1" required></textarea>
+                            <div class="chat-input-actions">
+                                <button type="submit" class="btn-chat-send" id="chat-send-btn" title="Send message">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: DOCUMENTS -->
+            <section id="tab-documents" class="content-tab-panel">
+                <div class="panel-header-row mb-4">
+                    <div>
+                        <h1 class="panel-main-title">Document & Knowledge Vault</h1>
+                        <p class="panel-main-sub">Upload project briefs, research papers, textbooks, and notes (PDF or TXT) to generate instant AI summaries and quiz drills.</p>
+                    </div>
+                </div>
+
+                <!-- Main Upload Dropzone -->
+                <div class="card-panel glassmorphism mb-4">
+                    <div class="dropzone-area dropzone-large" id="docs-dropzone" onclick="document.getElementById('docs-file-input').click()">
+                        <input type="file" id="docs-file-input" accept=".pdf,.txt" class="d-none">
+                        <i class="fa-solid fa-cloud-arrow-up dropzone-icon-lg"></i>
+                        <h3 class="dropzone-title-lg">Drag & drop your documents & files here</h3>
+                        <p class="dropzone-sub-lg">Upload PDF documents, project specs, research articles, or plain text notes to generate structured summaries and quiz modules.</p>
+                        <button type="button" class="btn btn-primary-gradient px-4 py-2 mt-2">
+                            <i class="fa-solid fa-folder-open me-2"></i>Browse Computer Files
+                        </button>
+                    </div>
+
+                    <div id="docs-upload-bar" class="upload-progress-box hidden mt-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span id="docs-upload-status">Parsing document structure...</span>
+                            <span id="docs-upload-pct">0%</span>
+                        </div>
+                        <div class="progress custom-progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-gradient-primary" id="docs-progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Repository Grid -->
+                <div class="vault-grid-header d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="vault-title"><i class="fa-solid fa-folder-tree text-accent-blue me-2"></i>Your Document Library (<span id="vault-count-badge">0</span>)</h3>
+                </div>
+                
+                <div class="row g-3" id="documents-grid-view">
+                    <!-- Dynamic Document Cards -->
+                </div>
+            </section>
+
+            <!-- TAB 4: STUDY NOTES -->
+            <section id="tab-notes" class="content-tab-panel">
+                <div class="panel-header-row mb-4">
+                    <div>
+                        <h1 class="panel-main-title">Knowledge Notes & AI Summaries</h1>
+                        <p class="panel-main-sub">Review AI-generated summaries, capture project insights, write documentation, and export clean markdown notes.</p>
+                    </div>
+                    <button class="btn btn-primary-gradient" id="btn-create-blank-note">
+                        <i class="fa-solid fa-plus me-2"></i>Create New Note
+                    </button>
+                </div>
+
+                <!-- Split Notes Workspace -->
+                <div class="notes-workspace glassmorphism">
+                    
+                    <!-- Left Sidebar: Notes List & Search -->
+                    <div class="notes-sidebar-list">
+                        <div class="notes-search-wrapper">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="notes-filter-input" placeholder="Search notes by title or content...">
+                        </div>
+                        
+                        <div class="notes-categories-pills" id="notes-cat-pills">
+                            <button class="cat-pill active" data-cat="all">All</button>
+                            <button class="cat-pill" data-cat="AI Summary">AI Summaries</button>
+                            <button class="cat-pill" data-cat="Project">Project & Work</button>
+                            <button class="cat-pill" data-cat="Study">Study & Research</button>
+                            <button class="cat-pill" data-cat="General">General</button>
+                        </div>
+
+                        <div class="notes-scrollable-items" id="notes-items-container">
+                            <!-- Dynamic note cards -->
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Rich Note Editor & Preview -->
+                    <div class="notes-editor-panel">
+                        <!-- Placeholder when no note is selected -->
+                        <div class="editor-placeholder" id="note-editor-placeholder">
+                            <div class="placeholder-content text-center">
+                                <i class="fa-solid fa-file-pen placeholder-icon"></i>
+                                <h3>Select a note or create a new one</h3>
+                                <p>Capture insights, organize project checklists, and export markdown notes.</p>
+                                <button class="btn btn-glass px-4 py-2 mt-2" onclick="createNewNote()">
+                                    <i class="fa-solid fa-plus me-2"></i>Create Note Now
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Active Note Editor Form -->
+                        <div class="editor-active-container hidden" id="note-editor-active">
+                            <div class="editor-toolbar">
+                                <div class="editor-meta-left">
+                                    <input type="text" id="note-input-title" class="note-title-input" placeholder="Note Title...">
+                                    <div class="note-meta-badges">
+                                        <select id="note-input-category" class="note-cat-select">
+                                            <option value="General">Category: General</option>
+                                            <option value="AI Summary">Category: AI Summary</option>
+                                            <option value="Project">Category: Project & Work</option>
+                                            <option value="Study">Category: Study</option>
+                                            <option value="Formula">Category: Formulas & Cheatsheets</option>
+                                        </select>
+                                        <button type="button" class="btn-pin-note" id="note-pin-toggle" title="Pin Note">
+                                            <i class="fa-solid fa-thumbtack"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="editor-toolbar-actions">
+                                    <button class="btn btn-sm btn-glass" id="btn-export-note" title="Export Note as Text file">
+                                        <i class="fa-solid fa-download me-1"></i>Export
+                                    </button>
+                                    <button class="btn btn-sm btn-primary-gradient" id="btn-save-note">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i>Save
+                                    </button>
+                                    <button class="btn btn-sm btn-danger-glass" id="btn-delete-note" title="Delete Note">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="editor-body-split">
+                                <textarea id="note-input-content" class="note-textarea" placeholder="Type your notes here... Markdown formatting is fully supported (e.g. ## Heading, - Bullet points, **Bold**)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: AI QUIZZES -->
+            <section id="tab-quiz" class="content-tab-panel">
+                <div class="panel-header-row mb-4">
+                    <div>
+                        <h1 class="panel-main-title">Interactive AI Quizzes & Drills</h1>
+                        <p class="panel-main-sub">Evaluate comprehension with AI-generated multiple-choice questions, timed tests, and score tracking.</p>
+                    </div>
+                </div>
+
+                <!-- Quiz Dashboard / Portal View -->
+                <div id="quiz-setup-view" class="row g-4">
+                    <div class="col-12 col-lg-5">
+                        <div class="card-panel glassmorphism h-100">
+                            <h3 class="panel-title mb-3"><i class="fa-solid fa-wand-magic-sparkles text-accent-purple me-2"></i>Configure New Assessment</h3>
+                            <p class="text-muted small mb-4">Choose any uploaded material or topic. Our local NLP/Gemini model compiles contextual multi-choice questions.</p>
+                            
+                            <form id="quiz-config-form">
+                                <div class="mb-3">
+                                    <label class="form-label" for="quiz-select-doc">Source Document / Knowledge Base</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text custom-addon"><i class="fa-solid fa-file-invoice"></i></span>
+                                        <select id="quiz-select-doc" class="form-select custom-input" required>
+                                            <option value="" disabled selected>Choose a document or topic...</option>
+                                            <!-- Dynamically populated -->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label" for="quiz-select-count">Number of Questions</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text custom-addon"><i class="fa-solid fa-list-ol"></i></span>
+                                        <select id="quiz-select-count" class="form-select custom-input">
+                                            <option value="3">3 Questions (Speed Run • ~2 min)</option>
+                                            <option value="5" selected>5 Questions (Standard • ~5 min)</option>
+                                            <option value="10">10 Questions (Comprehensive • ~10 min)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary-gradient w-100 py-3 fw-bold" id="btn-start-quiz">
+                                    <i class="fa-solid fa-play me-2"></i>Compile & Start Quiz
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-7">
+                        <div class="card-panel glassmorphism h-100">
+                            <div class="panel-header-row mb-3">
+                                <h3 class="panel-title"><i class="fa-solid fa-trophy text-accent-amber me-2"></i>Quiz History & Scores</h3>
+                            </div>
+                            <p class="text-muted small">Your past assessment attempts and performance metrics.</p>
+                            
+                            <div class="quiz-history-table-wrapper" id="quiz-history-container">
+                                <!-- Dynamic history items -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Timed Quiz Session View (Hidden by default) -->
+                <div id="quiz-active-screen" class="quiz-screen-container glassmorphism hidden">
+                    <div class="quiz-session-header">
+                        <div class="quiz-header-left">
+                            <span class="badge-quiz-active">Live Assessment</span>
+                            <h2 id="active-quiz-title-text" class="quiz-title-active">Assessment Knowledge Check</h2>
+                            <span class="quiz-tracker-text">Question <strong id="quiz-current-num">1</strong> of <strong id="quiz-total-num">5</strong></span>
+                        </div>
+                        <div class="quiz-timer-box" id="quiz-timer-box">
+                            <i class="fa-solid fa-stopwatch timer-icon"></i>
+                            <span id="quiz-timer-display">00:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="quiz-progress-track">
+                        <div class="quiz-progress-bar" id="quiz-progress-bar" style="width: 20%"></div>
+                    </div>
+
+                    <!-- Question Container -->
+                    <div class="quiz-question-box">
+                        <div class="question-prompt" id="quiz-question-prompt">
+                            Loading question...
+                        </div>
+
+                        <div class="quiz-options-grid" id="quiz-options-grid">
+                            <!-- Dynamic radio button choices -->
+                        </div>
+
+                        <!-- Feedback Explanation Box (shows after answering) -->
+                        <div class="quiz-feedback-banner hidden" id="quiz-feedback-banner">
+                            <div class="feedback-status-badge" id="feedback-badge">
+                                <i class="fa-solid fa-check" id="feedback-icon"></i>
+                                <span id="feedback-status-title">Correct!</span>
+                            </div>
+                            <p id="feedback-explanation-text" class="feedback-desc"></p>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Footer -->
+                    <div class="quiz-footer-actions">
+                        <button type="button" class="btn btn-danger-glass" id="btn-quit-quiz">
+                            <i class="fa-solid fa-xmark me-2"></i>Abort Quiz
+                        </button>
+                        <button type="button" class="btn btn-primary-gradient px-4" id="btn-next-question" disabled>
+                            <span>Next Question</span>
+                            <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Results & Score Summary View (Hidden by default) -->
+                <div id="quiz-results-screen" class="quiz-results-container glassmorphism text-center hidden">
+                    <div class="result-trophy-glow">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h2 class="result-title">Assessment Completed!</h2>
+                    <p class="result-subtitle">Great effort! Here is your knowledge retention breakdown.</p>
+
+                    <div class="score-card-summary">
+                        <div class="score-circle-graphic">
+                            <span class="score-fraction" id="result-score-fraction">4/5</span>
+                            <span class="score-percentage" id="result-score-pct">80%</span>
+                        </div>
+                        <div class="score-details-text text-start">
+                            <div class="badge-rank" id="result-rank-badge">🏆 Mastery: Excellent</div>
+                            <h4 id="result-feedback-heading">Outstanding Knowledge Retention!</h4>
+                            <p id="result-feedback-body" class="text-muted small">You demonstrated strong command over the tested topics. Keep testing periodically to solidify concepts in long-term memory.</p>
+                            <span class="time-spent-badge"><i class="fa-solid fa-clock me-1"></i>Time spent: <span id="result-time-spent">01:45</span></span>
+                        </div>
+                    </div>
+
+                    <div class="results-action-buttons mt-4">
+                        <button class="btn btn-primary-gradient px-4 py-2" onclick="exitQuizToPortal()">
+                            <i class="fa-solid fa-arrow-left me-2"></i>Back to Quiz Dashboard
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: UNTILDO TASKS & DAILY CARRY -->
+            <section id="tab-planner" class="content-tab-panel active">
+                <div class="d-flex justify-content-end mb-3">
+                    <button class="btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                        <i class="fa-solid fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+
+                <!-- Two-Column Grid: Tasks List & Calendar -->
+                <div class="row g-4 mb-4">
+                    <!-- Left: Tasks & Rollover Manager -->
+                    <div class="col-12 col-xl-7">
+                        <div class="card-panel glassmorphism h-100">
+                            <div class="panel-header-row mb-3 flex-wrap gap-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <h3 class="panel-title mb-0"><i class="fa-solid fa-list-check text-accent-emerald me-2"></i>Tasks:</h3>
+                                    <span class="badge-task-counter" id="tasks-pending-count">0 active</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="small text-muted" id="tasks-carried-count-sub">0 tasks carried forward</span>
+                                    <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" id="btn-toggle-task-filters" onclick="toggleTaskFilterPills()" title="Toggle task filters" style="display:none;">
+                                        <i class="fa-solid fa-sliders text-accent-blue me-1"></i>Filters
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Filter Pills (Hidden by default for minimal clean look) -->
+                            <div class="task-filter-pills mb-3 flex-wrap gap-2" id="task-filter-pills-container" style="display: none;">
+                                <button class="task-pill active" onclick="filterTasks('active', this)">⚡ Active Today & Carried</button>
+                                <button class="task-pill" onclick="filterTasks('upcoming', this)">⏳ Scheduled for Later (<span id="pill-upcoming-count">0</span>)</button>
+                                <button class="task-pill" onclick="filterTasks('carried', this)">🔄 Carried (<span id="pill-carried-count">0</span>)</button>
+                                <button class="task-pill" onclick="filterTasks('all', this)">📋 All (Incl. Future)</button>
+                                <button class="task-pill" onclick="filterTasks('critical', this)">🔥 Critical & High</button>
+                                <button class="task-pill" onclick="filterTasks('completed', this)">Done</button>
+                            </div>
+
+                            <div class="tasks-scrollable-list" id="planner-tasks-list">
+                                <!-- Dynamic tasks rendered by app.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Interactive Calendar & Carry Stats -->
+                    <div class="col-12 col-xl-5">
+                        <div class="card-panel glassmorphism mb-3">
+                            <div class="calendar-header-bar">
+                                <div class="calendar-nav-controls">
+                                    <button class="btn-cal-nav" onclick="navigateCalendarMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                                    <h3 class="calendar-month-title" id="calendar-month-year-display">Month Year</h3>
+                                    <button class="btn-cal-nav" onclick="navigateCalendarMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                                </div>
+                                <button class="btn btn-sm btn-glass" onclick="goToCurrentCalendarMonth()">Today</button>
+                            </div>
+
+                            <!-- Calendar Grid -->
+                            <div class="calendar-grid-wrapper">
+                                <div class="calendar-weekdays-row">
+                                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                                </div>
+                                <div class="calendar-days-grid" id="calendar-days-grid">
+                                    <!-- Dynamic month days -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selected Date Tasks Card (Small Bullet Points) -->
+                        <div class="cal-selected-card mb-3" id="cal-selected-date-card">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-regular fa-calendar-check text-accent-blue"></i>
+                                    <h5 class="mb-0 fs-6 fw-semibold" id="cal-selected-date-title">Tasks for Selected Date</h5>
+                                </div>
+                                <span class="badge-cal-count" id="cal-selected-date-count">0 tasks</span>
+                            </div>
+                            <ul class="cal-date-tasks-list mb-0" id="cal-selected-date-list">
+                                <!-- Dynamic small bullet points -->
+                            </ul>
+                        </div>
+
+                        <!-- Carryover Info Card -->
+                        <div class="card-panel glassmorphism p-3">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <i class="fa-solid fa-shield-halved text-accent-blue fs-4"></i>
+                                <div>
+                                    <h5 class="mb-0 fs-6">The UntilDo Guarantee</h5>
+                                    <p class="text-muted small mb-0">Never forget a deadline or unfinished goal.</p>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-2">
+                                Any task with <strong>Auto-Carry enabled</strong> rolls forward each day at midnight, keeping track of how many days it was carried. Turn off Auto-Carry on any individual task if you prefer it fixed to a past date.
+                            </p>
+                            <div class="d-flex justify-content-between text-muted small pt-2 border-top border-secondary border-opacity-25">
+                                <span>Default Auto-Carry: <span class="text-accent-emerald fw-semibold">ON</span></span>
+                                <span>Custom Deadlines: <span class="text-accent-blue fw-semibold">Flexible</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: ROUTINE & TIMETABLE (AI 7-Day Timetable & Follower) -->
+            <section id="tab-schedule" class="content-tab-panel">
+                <!-- Clean Top Bar: Title + Capsule Switcher -->
+                <div class="panel-header-row mb-3 align-items-center">
+                    <div>
+                        <h1 class="panel-main-title mb-1">Study Timetable & Routine</h1>
+                        <p class="panel-main-sub mb-0">Follow your routine, track milestones, and sync every topic directly to your Tasks checklist.</p>
+                    </div>
+                    
+                    <!-- Sleek Navigation Capsule -->
+                    <div class="schedule-nav-capsule">
+                        <button class="sched-capsule-btn active" id="sched-capsule-btn-active" onclick="switchScheduleView('active')">
+                            <i class="fa-solid fa-calendar-check text-accent-blue me-2"></i>Roadmap & Routine
+                        </button>
+                        <button class="sched-capsule-btn" id="sched-capsule-btn-import" onclick="switchScheduleView('import')">
+                            <i class="fa-solid fa-file-import text-accent-cyan me-2"></i>Import / Create Plan
+                        </button>
+                        <button class="sched-capsule-btn" id="sched-capsule-btn-saved" onclick="switchScheduleView('saved')">
+                            <i class="fa-solid fa-clock-rotate-left text-accent-emerald me-2"></i>Saved (<span id="saved-schedules-count">0</span>)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VIEW 1: ACTIVE TIMETABLE ROADMAP -->
+                <div id="sched-view-active">
+                    <!-- Clean Summary & Actions Bar -->
+                    <div class="schedule-top-summary-bar mb-3">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <h3 class="schedule-plan-title mb-0" id="schedule-active-title">
+                                    Active Study Plan
+                                </h3>
+                                <span class="schedule-progress-badge" id="schedule-progress-text">0 / 7 Days</span>
+                                <span class="badge bg-secondary-subtle text-muted" id="schedule-active-dates-badge" style="font-size: 0.72rem;">
+                                    <i class="fa-regular fa-calendar me-1"></i>Starts Today
+                                </span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <button class="btn btn-sm btn-glass text-accent-emerald py-1 px-3" onclick="syncActiveScheduleToTasks()" title="Sync all topics into UntilDo Daily Tasks checklist">
+                                    <i class="fa-solid fa-list-check me-1"></i>Sync Topics to Tasks
+                                </button>
+                                <button class="btn btn-sm btn-glass text-accent-cyan py-1 px-3" onclick="switchScheduleView('import')" title="Import or customize a new timetable">
+                                    <i class="fa-solid fa-file-import me-1"></i>Import / New Plan
+                                </button>
+                                <button class="btn btn-sm btn-glass py-1 px-3" id="btn-save-generated-schedule" title="Save this timetable">
+                                    <i class="fa-solid fa-cloud-arrow-up me-1"></i>Save
+                                </button>
+                            </div>
+                        </div>
+                        <div class="schedule-slim-progress mt-2" id="schedule-progress-container">
+                            <div class="schedule-slim-bar" id="schedule-progress-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Strip (starts from Today or selected date) -->
+                    <div class="week-calendar-strip mb-4" id="week-calendar-strip">
+                        <!-- Dynamic date cards -->
+                    </div>
+
+                    <!-- Two-Column Workspace & Schedule Calendar Grid -->
+                    <div class="row g-4 mb-4" id="sched-active-grid">
+                        <!-- Left: Expanded Day Workspace -->
+                        <div class="col-12 col-xl-7">
+                            <div class="expanded-day-workspace" id="expanded-day-workspace">
+                                <!-- Dynamic Day Details -->
+                            </div>
+                        </div>
+
+                        <!-- Right: Schedule Calendar Widget & Selected Date Session -->
+                        <div class="col-12 col-xl-5">
+                            <!-- Interactive Schedule Calendar Card -->
+                            <div class="card-panel glassmorphism mb-3">
+                                <div class="calendar-header-bar">
+                                    <div class="calendar-nav-controls">
+                                        <button class="btn-cal-nav" onclick="navigateScheduleCalendarMonth(-1)" title="Previous Month"><i class="fa-solid fa-chevron-left"></i></button>
+                                        <h3 class="calendar-month-title" id="sched-calendar-month-year-display">Month Year</h3>
+                                        <button class="btn-cal-nav" onclick="navigateScheduleCalendarMonth(1)" title="Next Month"><i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                    <button class="btn btn-sm btn-glass" onclick="goToCurrentScheduleCalendarMonth()">Today</button>
+                                </div>
+
+                                <!-- Calendar Grid -->
+                                <div class="calendar-grid-wrapper">
+                                    <div class="calendar-weekdays-row">
+                                        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                                    </div>
+                                    <div class="calendar-days-grid" id="sched-calendar-days-grid">
+                                        <!-- Dynamic month days with schedule sessions -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Selected Date Session Summary Card -->
+                            <div class="cal-selected-card mb-3" id="sched-cal-selected-card">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-graduation-cap text-accent-purple"></i>
+                                        <h5 class="mb-0 fs-6 fw-semibold" id="sched-cal-selected-title">Schedule for Selected Date</h5>
+                                    </div>
+                                    <span class="badge" id="sched-cal-selected-badge">Day 1</span>
+                                </div>
+                                <div id="sched-cal-selected-body">
+                                    <!-- Dynamic selected day session details -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State (if no timetable active) -->
+                    <div id="schedule-empty-state" class="card-panel glassmorphism text-center py-5 hidden">
+                        <i class="fa-solid fa-calendar-xmark text-muted fs-1 mb-3"></i>
+                        <h4 class="text-muted">No Active Timetable</h4>
+                        <p class="text-muted small mb-4">Directly import your schedule from ChatGPT / Gemini or paste your custom study topics to begin.</p>
+                        <div class="d-flex justify-content-center gap-3 flex-wrap">
+                            <button class="btn btn-primary-gradient px-4" onclick="switchScheduleView('import')">
+                                <i class="fa-solid fa-file-import me-2"></i>Import / Create Schedule
+                            </button>
+                            <button class="btn btn-glass px-4" onclick="switchScheduleView('saved')">
+                                <i class="fa-solid fa-folder-open me-2"></i>Open Saved Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: IMPORT & CUSTOMIZE TIMETABLE -->
+                <div id="sched-view-import" class="hidden">
+                    <div class="card-panel glassmorphism mb-4">
+                        <div class="panel-header-row mb-3">
+                            <div>
+                                <h3 class="panel-title"><i class="fa-solid fa-file-import text-accent-cyan me-2"></i>Import & Customize Timetable</h3>
+                                <p class="panel-subtitle">Directly paste your timetable from ChatGPT, Gemini, or Claude. Timetable will start from whatever date you choose, and topics will automatically appear as actionable tasks on your Tasks page.</p>
+                            </div>
+                            <button class="btn btn-sm btn-glass" onclick="switchScheduleView('active')">
+                                <i class="fa-solid fa-arrow-left me-1"></i>Back
+                            </button>
+                        </div>
+
+                        <!-- Prompt Helper & Format Support Box -->
+                        <div class="p-3 mb-4 rounded glassmorphism" style="background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2);">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                                <span class="small fw-bold text-accent-cyan">
+                                    <i class="fa-solid fa-lightbulb me-1"></i>Tip: Copy this prompt to get a formatted timetable from ChatGPT or Gemini:
+                                </span>
+                                <button type="button" class="btn btn-sm btn-glass text-accent-cyan py-1 px-2" onclick="copySchedulePromptTemplate()">
+                                    <i class="fa-solid fa-copy me-1"></i>Copy Prompt to Clipboard
+                                </button>
+                            </div>
+                            <code class="d-block p-2 rounded small text-light" style="background: rgba(0,0,0,0.35); font-size: 0.82rem; user-select: all;" id="schedule-prompt-template-text">Create a study timetable for [my subjects]. For each day include: Day, Time slot, Subject, Focus Topic, and Action tasks checklist.</code>
+                            <div class="d-flex align-items-center gap-2 mt-2 flex-wrap">
+                                <span class="text-muted small">Supports:</span>
+                                <span class="badge bg-secondary-subtle text-muted" style="font-size: 0.72rem;">Markdown Tables (| Day | Time |...)</span>
+                                <span class="badge bg-secondary-subtle text-muted" style="font-size: 0.72rem;">Day Blocks & Bullets</span>
+                                <span class="badge bg-secondary-subtle text-muted" style="font-size: 0.72rem;">Single-line lists</span>
+                                <span class="badge bg-secondary-subtle text-muted" style="font-size: 0.72rem;">JSON Array</span>
+                                <button type="button" class="btn btn-sm btn-link text-accent-cyan p-0 ms-auto text-decoration-none small" onclick="loadSampleImportTimetable()">
+                                    <i class="fa-solid fa-wand-magic me-1"></i>Load Sample Timetable
+                                </button>
+                            </div>
+                        </div>
+
+                        <form id="schedule-import-form" onsubmit="handleImportSchedule(event)">
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-7">
+                                    <label class="form-label" for="schedule-import-title">Timetable Plan Title</label>
+                                    <input type="text" class="form-control custom-input" id="schedule-import-title" placeholder="e.g. Master Sprint Routine">
+                                </div>
+                                <div class="col-12 col-md-5">
+                                    <label class="form-label" for="schedule-import-start-date">Start Schedule From Date</label>
+                                    <input type="date" class="form-control custom-input" id="schedule-import-start-date" required>
+                                    <div class="d-flex gap-2 mt-1">
+                                        <button type="button" class="btn btn-sm btn-link text-accent-blue p-0 text-decoration-none small" onclick="setImportStartDateOffset(0)">Today</button>
+                                        <span class="text-muted small">•</span>
+                                        <button type="button" class="btn btn-sm btn-link text-accent-blue p-0 text-decoration-none small" onclick="setImportStartDateOffset(1)">Tomorrow</button>
+                                        <span class="text-muted small">•</span>
+                                        <button type="button" class="btn btn-sm btn-link text-accent-blue p-0 text-decoration-none small" onclick="setImportStartDateOffset(7)">Next Week</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label mb-0" for="schedule-import-text">Paste Timetable Text</label>
+                                    <button type="button" class="btn btn-sm btn-link text-muted p-0 text-decoration-none small" onclick="document.getElementById('schedule-import-text').value = ''; document.getElementById('schedule-import-text').focus();">
+                                        <i class="fa-solid fa-eraser me-1"></i>Clear
+                                    </button>
+                                </div>
+                                <textarea class="form-control custom-input font-monospace" id="schedule-import-text" rows="9" 
+                                    placeholder="Paste the output from ChatGPT or Gemini here...&#10;&#10;Example:&#10;Day 1: 09:00 AM - 11:30 AM | Python: AsyncIO - Build web scraper; read docs&#10;Day 2: 10:00 AM - 12:30 PM | FastAPI: REST APIs - Implement endpoints; write tests" required></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input custom-checkbox" type="checkbox" id="schedule-import-to-tasks" checked>
+                                    <label class="form-check-label small text-muted" for="schedule-import-to-tasks">
+                                        <strong>Automatically show each topic as a task on the Tasks page</strong> (with due dates & subtasks)
+                                    </label>
+                                </div>
+                                <div class="small text-muted">
+                                    <i class="fa-solid fa-calendar-day text-accent-emerald me-1"></i>Dates automatically align to your chosen start day
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                <button type="button" class="btn btn-glass px-3" onclick="switchScheduleView('active')">Cancel</button>
+                                <button type="button" class="btn btn-glass text-accent-blue px-3" id="btn-parse-preview" onclick="parseAndPreviewImportedSchedule()">
+                                    <i class="fa-solid fa-pen-to-square me-1"></i>Customize & Preview Days
+                                </button>
+                                <button type="submit" class="btn btn-primary-gradient px-4 fw-bold" id="btn-import-schedule-submit">
+                                    <i class="fa-solid fa-bolt me-2"></i>Apply & Sync to Tasks
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- CUSTOMIZABLE SCHEDULE PREVIEW & INLINE DRAFT EDITOR -->
+                <div id="sched-preview-container" class="card-panel glassmorphism mb-4 hidden">
+                    <div class="panel-header-row mb-3 flex-wrap gap-2">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-primary text-white" style="font-size: 0.72rem;">CUSTOMIZE PLAN</span>
+                                <h3 class="panel-title mb-0">Review & Customize Schedule Days</h3>
+                            </div>
+                            <p class="panel-subtitle">Edit any day's subject, topic, date, or tasks. Add or delete days as needed. Every topic will sync to your Tasks page.</p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="button" class="btn btn-sm btn-glass text-accent-cyan" onclick="addDraftDay()">
+                                <i class="fa-solid fa-plus me-1"></i>Add Day
+                            </button>
+                            <button type="button" class="btn btn-sm btn-glass" onclick="discardScheduleDraft()">
+                                <i class="fa-solid fa-xmark me-1"></i>Discard
+                            </button>
+                            <button type="button" class="btn btn-sm btn-primary-gradient px-3 fw-bold" onclick="applyScheduleDraft()">
+                                <i class="fa-solid fa-check me-1"></i>Apply & Sync to Tasks
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Draft Controls: Title + Start Date -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-7">
+                            <label class="form-label small text-muted">Schedule Plan Title</label>
+                            <input type="text" class="form-control custom-input" id="sched-draft-title" placeholder="e.g. Master Sprint Routine">
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <label class="form-label small text-muted">Start Date (Recalculates all days)</label>
+                            <input type="date" class="form-control custom-input" id="sched-draft-start-date" onchange="recalculateDraftDates(this.value)">
+                        </div>
+                    </div>
+
+                    <!-- Editable Cards Grid -->
+                    <div id="sched-draft-cards" class="row g-3">
+                        <!-- Injected dynamically via JS -->
+                    </div>
+
+                    <!-- Action footer -->
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4 pt-3 border-top border-glass">
+                        <button type="button" class="btn btn-sm btn-glass text-accent-cyan" onclick="addDraftDay()">
+                            <i class="fa-solid fa-plus me-1"></i>Add Another Day
+                        </button>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-glass px-3" onclick="discardScheduleDraft()">Discard</button>
+                            <button type="button" class="btn btn-primary-gradient px-4 fw-bold" onclick="applyScheduleDraft()">
+                                <i class="fa-solid fa-calendar-check me-2"></i>Apply & Sync to Tasks Page
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: SAVED SCHEDULES BROWSER -->
+                <div id="sched-view-saved" class="hidden">
+                    <div class="card-panel glassmorphism mb-4">
+                        <div class="panel-header-row mb-3">
+                            <div>
+                                <h3 class="panel-title"><i class="fa-solid fa-folder-open text-accent-blue me-2"></i>Saved Timetables</h3>
+                                <p class="panel-subtitle">Resume or follow previous routine schedules.</p>
+                            </div>
+                            <button class="btn btn-sm btn-primary-gradient" onclick="switchScheduleView('import')">
+                                <i class="fa-solid fa-plus me-1"></i>New Plan
+                            </button>
+                        </div>
+                        <div class="row g-3" id="saved-schedules-inline-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: USER PROFILE -->
+            <section id="tab-profile" class="content-tab-panel">
+                <div class="panel-header-row mb-4">
+                    <div>
+                        <h1 class="panel-main-title">Profile & Productivity Workspace</h1>
+                        <p class="panel-main-sub">Personalize your identity, define your primary mission, and track your focus targets.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-12 col-lg-4">
+                        <div class="card-panel glassmorphism text-center h-100">
+                            <div class="profile-avatar-large-container mb-3">
+                                <div class="profile-avatar-large" id="profile-avatar-display">
+                                    <i class="fa-solid fa-user-astronaut"></i>
+                                </div>
+                            </div>
+                            <h3 id="profile-display-username">User</h3>
+                            <p class="text-accent-blue small mb-3" id="profile-display-goal">Achieving daily priorities & master goals</p>
+
+                            <!-- Avatar Picker -->
+                            <div class="avatar-picker-section mt-3">
+                                <label class="form-label small text-muted">Choose Your Avatar:</label>
+                                <div class="avatar-options-row" id="avatar-options-row">
+                                    <button type="button" class="avatar-opt-btn active" data-avatar="astronaut" onclick="selectAvatar('astronaut')" title="Explorer / Astronaut"><i class="fa-solid fa-user-astronaut"></i></button>
+                                    <button type="button" class="avatar-opt-btn" data-avatar="laptop-code" onclick="selectAvatar('laptop-code')" title="Tech / Builder"><i class="fa-solid fa-laptop-code"></i></button>
+                                    <button type="button" class="avatar-opt-btn" data-avatar="briefcase" onclick="selectAvatar('briefcase')" title="Professional / Creator"><i class="fa-solid fa-user-tie"></i></button>
+                                    <button type="button" class="avatar-opt-btn" data-avatar="robot" onclick="selectAvatar('robot')" title="AI / Cyber"><i class="fa-solid fa-robot"></i></button>
+                                    <button type="button" class="avatar-opt-btn" data-avatar="user-ninja" onclick="selectAvatar('user-ninja')" title="Focus Ninja"><i class="fa-solid fa-user-ninja"></i></button>
+                                    <button type="button" class="avatar-opt-btn" data-avatar="brain" onclick="selectAvatar('brain')" title="Mastermind"><i class="fa-solid fa-brain"></i></button>
+                                </div>
+                            </div>
+
+                            <hr class="custom-divider my-4">
+
+                            <!-- Badges -->
+                            <div class="profile-badges-row">
+                                <div class="profile-badge-item" title="Active Focus Streak">
+                                    <i class="fa-solid fa-fire text-warning"></i>
+                                    <span class="badge-num" id="profile-streak-count">1</span>
+                                    <span class="badge-lbl">Day Streak</span>
+                                </div>
+                                <div class="profile-badge-item" title="Completed Tasks">
+                                    <i class="fa-solid fa-circle-check text-accent-emerald"></i>
+                                    <span class="badge-num" id="profile-tasks-count">0</span>
+                                    <span class="badge-lbl">Done Tasks</span>
+                                </div>
+                                <div class="profile-badge-item" title="Knowledge Notes & Docs">
+                                    <i class="fa-solid fa-book-open text-accent-blue"></i>
+                                    <span class="badge-num" id="profile-notes-count">0</span>
+                                    <span class="badge-lbl">Notes & Docs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-8">
+                        <div class="card-panel glassmorphism h-100">
+                            <h3 class="panel-title mb-3"><i class="fa-solid fa-id-card text-accent-blue me-2"></i>Profile Details</h3>
+                            
+                            <form id="profile-edit-form">
+                                <div class="row g-3 mb-3">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label" for="profile-input-fullname">Full Name</label>
+                                        <input type="text" class="form-control custom-input" id="profile-input-fullname" placeholder="e.g. Alex Morgan">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label" for="profile-input-email">Email Address</label>
+                                        <input type="email" class="form-control custom-input" id="profile-input-email" placeholder="user@domain.com">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="profile-input-goal">Primary Focus / Main Objective</label>
+                                    <input type="text" class="form-control custom-input" id="profile-input-goal" placeholder="e.g. Build product roadmap, complete system migration & read 20 pages daily">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Weekly Deep Focus Target: <strong id="weekly-hours-label" class="text-accent-blue">15</strong> hrs/week</label>
+                                    <input type="range" class="form-range custom-range" id="profile-input-target-hours" min="5" max="60" step="1" value="15" oninput="document.getElementById('weekly-hours-label').textContent = this.value">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary-gradient px-4 py-2 fw-bold" id="btn-save-profile">
+                                    <i class="fa-solid fa-circle-check me-2"></i>Save Profile Changes
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 8: SETTINGS -->
+            <section id="tab-settings" class="content-tab-panel">
+                <div class="panel-header-row mb-4">
+                    <div>
+                        <h1 class="panel-main-title">Portal Settings</h1>
+                        <p class="panel-main-sub">Configure AI model connectors, theme preferences, and system diagnostics.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- AI API Configuration Card -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card-panel glassmorphism h-100">
+                            <h3 class="panel-title mb-3"><i class="fa-solid fa-key text-accent-purple me-2"></i>Google Gemini API Integration</h3>
+                            <p class="text-muted small mb-4">Optional: Connect your personal Gemini API key for advanced generative reasoning. If left empty, UntilDo runs completely on built-in offline NLP models.</p>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="settings-gemini-key">Gemini API Key (Stored in LocalStorage)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text custom-addon"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" class="form-control custom-input" id="settings-gemini-key" placeholder="AIzaSy...">
+                                    <button type="button" class="btn btn-glass" onclick="togglePasswordVisibility('settings-gemini-key', this)">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span class="form-text text-muted small">Your key is kept safe and never transmitted to third parties.</span>
+                            </div>
+
+                            <button type="button" class="btn btn-primary-gradient px-4 py-2" id="btn-save-gemini-key" onclick="saveGeminiKey()">
+                                <i class="fa-solid fa-floppy-disk me-2"></i>Save API Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Theme & UI Preferences Card -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card-panel glassmorphism h-100">
+                            <h3 class="panel-title mb-3"><i class="fa-solid fa-palette text-accent-blue me-2"></i>Appearance & Theme</h3>
+                            <p class="text-muted small mb-4">Switch between sleek Glassmorphic Dark Mode and clean Bright Light Mode.</p>
+
+                            <div class="theme-selection-grid mb-4">
+                                <button type="button" class="theme-choice-card active" id="theme-btn-dark" onclick="setTheme('dark')">
+                                    <i class="fa-solid fa-moon theme-choice-icon"></i>
+                                    <h4>Dark Mode</h4>
+                                    <p>Vibrant glowing glassmorphism</p>
+                                </button>
+                                <button type="button" class="theme-choice-card" id="theme-btn-light" onclick="setTheme('light')">
+                                    <i class="fa-solid fa-sun theme-choice-icon"></i>
+                                    <h4>Light Mode</h4>
+                                    <p>High contrast daytime clarity</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ==========================================
+         MODALS
+         ========================================== -->
+
+    <!-- Add Task Modal -->
+    <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glassmorphism-modal">
+                <div class="modal-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <h5 class="modal-title mb-0" id="addTaskModalLabel"><i class="fa-solid fa-plus-circle text-accent-blue me-2"></i>Add Task</h5>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="form-check form-switch d-flex align-items-center gap-2 mb-0" title="Daily Auto-Carry: Roll forward to Today each morning until completed">
+                            <label class="form-check-label text-muted small mb-0" for="task-input-autocarry" style="font-size: 0.78rem; cursor:pointer;">
+                                <i class="fa-solid fa-arrows-rotate text-accent-blue me-1"></i>Carry Daily
+                            </label>
+                            <input class="form-check-input" type="checkbox" id="task-input-autocarry" checked style="cursor:pointer;">
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <form id="add-task-form">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label" for="task-input-title">Task Title</label>
+                            <input type="text" class="form-control custom-input" id="task-input-title" placeholder="e.g. Read Pages 1 to 20, Complete math chapter..." required>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label" for="task-input-category">Category</label>
+                                <select class="form-select custom-input" id="task-input-category">
+                                    <option value="Study" selected>📚 Study</option>
+                                    <option value="Work">💼 Work</option>
+                                    <option value="Personal">👤 Personal</option>
+                                    <option value="Project">🎯 Project</option>
+                                    <option value="Fitness">💪 Health</option>
+                                    <option value="General">📌 General</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="task-input-priority">Importance Level</label>
+                                <select class="form-select custom-input" id="task-input-priority">
+                                    <option value="Critical">🔥 Critical (Urgent)</option>
+                                    <option value="High">⚡ High Priority</option>
+                                    <option value="Medium" selected>🔹 Medium Priority</option>
+                                    <option value="Low">☕ Low Priority</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="task-input-desc">Details / Notes (optional)</label>
+                            <textarea class="form-control custom-input" id="task-input-desc" rows="2" placeholder="Sub-steps, references, or reminders..."></textarea>
+                        </div>
+
+                        <!-- Mini Plus Text Buttons to Expand Specific Options -->
+                        <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+                            <span class="small text-muted" style="font-size: 0.75rem;">Options:</span>
+                            <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" id="btn-toggle-schedule" onclick="toggleOptionSection('schedule')">
+                                <i class="fa-regular fa-calendar text-accent-blue me-1"></i>+ Schedule Date
+                            </button>
+                            <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" id="btn-toggle-deadline" onclick="toggleOptionSection('deadline')">
+                                <i class="fa-solid fa-clock text-accent-rose me-1"></i>+ Due Date
+                            </button>
+                            <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" id="btn-toggle-goal" onclick="toggleOptionSection('goal')">
+                                <i class="fa-solid fa-bullseye text-accent-cyan me-1"></i>+ Goal Tracker
+                            </button>
+                            <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" id="btn-toggle-milestones" onclick="toggleOptionSection('milestones')">
+                                <i class="fa-solid fa-list-check text-accent-emerald me-1"></i>+ Parts / Steps
+                            </button>
+                        </div>
+
+                        <!-- Option Section: Schedule Date (Appear / Start Date) -->
+                        <div id="opt-section-schedule" class="card-panel glassmorphism p-3 mb-3" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label mb-0 fw-semibold" for="task-input-schedule">
+                                    <i class="fa-regular fa-calendar text-accent-blue me-1"></i>When should this appear? (Start / Schedule Date)
+                                </label>
+                                <button type="button" class="btn-close btn-close-white small" onclick="toggleOptionSection('schedule')" style="font-size: 0.65rem;"></button>
+                            </div>
+                            <input type="date" class="form-control custom-input mb-2" id="task-input-due" onchange="updateDateRelativeHint(this.value)">
+                            <div class="d-flex gap-1 flex-wrap align-items-center mb-1" id="quick-date-chips">
+                                <span class="small text-muted me-1" style="font-size: 0.72rem;">Appear on:</span>
+                                <button type="button" class="btn btn-sm btn-glass py-0 px-2 small" onclick="setTaskDateOffset(0)">Today</button>
+                                <button type="button" class="btn btn-sm btn-glass py-0 px-2 small" onclick="setTaskDateOffset(1)">Tomorrow</button>
+                                <button type="button" class="btn btn-sm btn-glass py-0 px-2 small" onclick="setTaskDateOffset(3)">In 3 Days</button>
+                                <button type="button" class="btn btn-sm btn-glass py-0 px-2 small" onclick="setTaskDateOffset(6)">After 10th (6d)</button>
+                                <button type="button" class="btn btn-sm btn-glass py-0 px-2 small" onclick="setTaskDateOffset(7)">Next Week</button>
+                            </div>
+                            <div class="text-muted small" id="task-date-relative-hint" style="font-size: 0.73rem;">
+                                <i class="fa-solid fa-circle-info me-1 opacity-50"></i>Tasks scheduled for future dates stay hidden until that date, then appear and roll over daily until completed.
+                            </div>
+                        </div>
+
+                        <!-- Option Section: Due Date (Deadline) -->
+                        <div id="opt-section-deadline" class="card-panel glassmorphism p-3 mb-3" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label mb-0 fw-semibold" for="task-input-deadline">
+                                    <i class="fa-solid fa-clock text-accent-rose me-1"></i>Strict Deadline / Due Date
+                                </label>
+                                <button type="button" class="btn-close btn-close-white small" onclick="toggleOptionSection('deadline')" style="font-size: 0.65rem;"></button>
+                            </div>
+                            <input type="date" class="form-control custom-input mb-1" id="task-input-deadline">
+                            <span class="small text-muted" style="font-size: 0.72rem;">Optional final deadline for when this must be completed.</span>
+                        </div>
+
+                        <!-- Option Section: Goal Tracker -->
+                        <div id="opt-section-goal" class="card-panel glassmorphism p-3 mb-3" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="fw-semibold small mb-0 text-accent-blue">
+                                    <i class="fa-solid fa-bullseye me-1"></i>Goal & Measurable Tracker
+                                </label>
+                                <button type="button" class="btn-close btn-close-white small" onclick="toggleOptionSection('goal')" style="font-size: 0.65rem;"></button>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label small text-muted mb-1" for="task-goal-target">Target Amount</label>
+                                    <input type="number" min="1" class="form-control form-control-sm custom-input" id="task-goal-target" placeholder="e.g. 10, 50, 100">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small text-muted mb-1" for="task-goal-unit">Unit / Metric</label>
+                                    <input type="text" class="form-control form-control-sm custom-input" id="task-goal-unit" placeholder="e.g. pages, chapters, hrs">
+                                </div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label small text-muted mb-1" for="task-goal-current">Starting / Current</label>
+                                    <input type="number" min="0" class="form-control form-control-sm custom-input" id="task-goal-current" value="0">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small text-muted mb-1" for="task-goal-period">Target Pace / Cadence</label>
+                                    <input type="text" class="form-control form-control-sm custom-input" id="task-goal-period" placeholder="e.g. 10 pages in 2 days">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Option Section: Breakdown into Parts / Steps -->
+                        <div id="opt-section-milestones" class="card-panel glassmorphism p-3 mb-3" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="fw-semibold small mb-0 text-accent-emerald">
+                                    <i class="fa-solid fa-list-check me-1"></i>Breakdown into Parts / Steps
+                                </label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-sm btn-glass text-accent-emerald py-0 px-2" onclick="addModalSubtaskInput()">
+                                        <i class="fa-solid fa-plus me-1"></i>Add Part
+                                    </button>
+                                    <button type="button" class="btn-close btn-close-white small" onclick="toggleOptionSection('milestones')" style="font-size: 0.65rem;"></button>
+                                </div>
+                            </div>
+                            <div id="modal-subtasks-container" class="d-flex flex-column gap-2 mt-2">
+                                <!-- Dynamic subtask input rows -->
+                            </div>
+                        </div>
+
+                        <!-- TICK MARK: Part of a Bigger Task / Goal (Compact) -->
+                        <div class="card-panel glassmorphism py-2 px-3 mb-2" style="background: rgba(99, 102, 241, 0.03); border: 1px dashed rgba(99, 102, 241, 0.25);">
+                            <div class="form-check d-flex align-items-center p-0 mb-0">
+                                <label class="form-check-label d-flex align-items-center gap-2 mb-0" for="task-is-part" style="cursor: pointer; font-size: 0.82rem; font-weight: 500;">
+                                    <input class="form-check-input ms-0 me-1" type="checkbox" id="task-is-part" onchange="togglePartOptions(this.checked)" style="width: 0.95rem; height: 0.95rem; cursor: pointer;">
+                                    <span class="text-accent-blue"><i class="fa-solid fa-diagram-project me-1"></i>This is just part of a bigger task / goal</span>
+                                </label>
+                            </div>
+                            <div id="task-part-options" class="mt-2 pt-2 border-top border-glass" style="display: none;">
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted mb-1" for="task-parent-title" style="font-size: 0.74rem;">Bigger Task / Master Goal Name</label>
+                                    <input type="text" class="form-control form-control-sm custom-input" id="task-parent-title" placeholder="e.g. Read Book: Atomic Habits, or Project Alpha" list="parent-goals-datalist" style="font-size: 0.8rem; padding: 4px 8px;">
+                                    <datalist id="parent-goals-datalist"></datalist>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted mb-1" for="task-part-details" style="font-size: 0.74rem;">Specific Part / Step Details</label>
+                                    <input type="text" class="form-control form-control-sm custom-input" id="task-part-details" placeholder="e.g. Read Pages 1 to 20, or Chapter 1" style="font-size: 0.8rem; padding: 4px 8px;">
+                                </div>
+                                <div class="form-check small text-muted">
+                                    <input class="form-check-input" type="checkbox" id="task-next-prompt" checked style="width: 0.85rem; height: 0.85rem;">
+                                    <label class="form-check-label" for="task-next-prompt" style="font-size: 0.72rem;">
+                                        ⚡ When completed, directly prompt to add next step (no manual re-entry!)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-danger-glass d-none align-items-center gap-1 px-3 py-2" id="btn-delete-task-modal" onclick="deleteTaskFromModal(event)">
+                            <i class="fa-solid fa-trash-can me-1"></i>Delete Task
+                        </button>
+                        <div class="d-flex align-items-center gap-2 ms-auto">
+                            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary-gradient px-4" id="btn-save-task">Create Task</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" aria-labelledby="confirmDeleteTaskModalLabel" aria-hidden="true" style="z-index: 1070;">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content glassmorphism-modal p-3 text-center border-0" style="background: rgba(15, 23, 42, 0.96); box-shadow: 0 20px 50px rgba(0,0,0,0.65); border: 1px solid rgba(244, 63, 94, 0.4) !important;">
+                <div class="my-2">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 52px; height: 52px; background: rgba(244, 63, 94, 0.15); color: #f43f5e; font-size: 1.4rem;">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </span>
+                </div>
+                <h5 class="modal-title fw-bold text-white mb-2" id="confirmDeleteTaskModalLabel">Delete Task?</h5>
+                <p class="text-muted small mb-4" id="confirm-delete-task-desc">Are you sure you want to delete this task? This action cannot be undone.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-glass px-3 py-2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger-glass px-4 py-2 text-white" id="btn-confirm-delete-task-action" style="background: rgba(244, 63, 94, 0.85); border-color: #f43f5e;" onclick="executeConfirmedDelete()">
+                        <i class="fa-solid fa-trash-can me-1"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Step / Follow-Up Goal Modal -->
+    <div class="modal fade" id="nextGoalModal" tabindex="-1" aria-labelledby="nextGoalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glassmorphism-modal">
+                <div class="modal-header border-0 pb-0">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-4">🎉</span>
+                        <div>
+                            <h5 class="modal-title mb-0" id="nextGoalModalLabel">Step Completed!</h5>
+                            <span class="text-accent-emerald small" id="next-goal-completed-task-title">Read Pages 1 to 20</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="p-3 rounded glassmorphism mb-3" style="background: rgba(99, 102, 241, 0.06); border: 1px solid rgba(99, 102, 241, 0.25);">
+                        <div class="small text-muted mb-1"><i class="fa-solid fa-diagram-project text-accent-blue me-1"></i>Bigger Task / Goal:</div>
+                        <h6 class="mb-0 fw-bold text-accent-blue" id="next-goal-parent-title">Read Book: Atomic Habits</h6>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="next-goal-input-title">Next Step / Further Goal:</label>
+                        <input type="text" class="form-control custom-input" id="next-goal-input-title" placeholder="e.g. Read Pages 21 to 40, or Chapter 2...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">When should this next step appear?</label>
+                        <div class="d-flex gap-1 flex-wrap align-items-center mb-2" id="next-goal-date-chips">
+                            <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" onclick="setNextGoalDateOffset(0)">Today</button>
+                            <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" onclick="setNextGoalDateOffset(1)">Tomorrow</button>
+                            <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" onclick="setNextGoalDateOffset(2)">In 2 Days</button>
+                            <button type="button" class="btn btn-sm btn-glass py-1 px-2 small" onclick="setNextGoalDateOffset(7)">Next Week</button>
+                        </div>
+                        <input type="date" class="form-control custom-input form-control-sm" id="next-goal-input-due">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
+                    <button type="button" class="btn btn-sm btn-glass" data-bs-dismiss="modal">Done for Now</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-glass text-accent-emerald" onclick="finishEntireBiggerGoal()">
+                            <i class="fa-solid fa-flag-checkered me-1"></i>Master Goal Finished
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary-gradient px-3" onclick="submitNextStepGoal()">
+                            <i class="fa-solid fa-bolt me-1"></i>Add Next Step
+                        </button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- Generic Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content glassmorphism-modal text-center p-3">
+                <div class="modal-body">
+                    <i class="fa-solid fa-triangle-exclamation text-warning fs-1 mb-3" id="confirm-modal-icon"></i>
+                    <h4 id="confirm-modal-title">Confirm Action</h4>
+                    <p class="text-muted small" id="confirm-modal-desc">Are you sure you want to proceed?</p>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <button type="button" class="btn btn-glass px-3" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger-glass px-3" id="confirm-modal-action-btn">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved Schedules Library Modal -->
+    <div class="modal fade" id="savedSchedulesModal" tabindex="-1" aria-labelledby="savedSchedulesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glassmorphism-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="savedSchedulesModalLabel">
+                        <i class="fa-solid fa-folder-open text-accent-blue me-2"></i>My Saved Timetables
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">Select any previously saved routine schedule to open, follow daily milestones, or convert into checklist tasks.</p>
+                    <div id="saved-schedules-list" class="row g-3">
+                        <!-- Dynamic list of saved schedules -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Application Logic (with cache-busting version) -->
+    <script src="app.js?v=4.2"></script>
+</body>
+</html>
