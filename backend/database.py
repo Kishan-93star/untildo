@@ -156,9 +156,16 @@ def init_db():
             id SERIAL PRIMARY KEY,
             username TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
+            password_hint TEXT DEFAULT '',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """)
+
+        # Postgres Column migration for password_hint
+        try:
+            cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hint TEXT DEFAULT ''")
+        except Exception:
+            pass
 
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS user_profiles (
@@ -403,6 +410,7 @@ def init_db():
 
         # SQLite Column migrations
         cols = [
+            ("users", "password_hint", "TEXT DEFAULT ''"),
             ("notes", "category", "TEXT DEFAULT 'General'"),
             ("notes", "is_pinned", "INTEGER DEFAULT 0"),
             ("quiz_attempts", "time_seconds", "INTEGER DEFAULT 0"),

@@ -14,7 +14,8 @@ from backend.auth import (
     hash_password,
     verify_password,
     create_access_token,
-    get_current_user
+    get_current_user,
+    generate_password_hint
 )
 from backend.ml_utils import (
     extract_text_from_file,
@@ -179,10 +180,11 @@ def register(user_data: UserRegister):
     
     conn = get_db_connection()
     cursor = conn.cursor()
+    pwd_hint = generate_password_hint(password)
     try:
         cursor.execute(
-            "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-            (username, pwd_hash)
+            "INSERT INTO users (username, password_hash, password_hint) VALUES (?, ?, ?)",
+            (username, pwd_hash, pwd_hint)
         )
         user_id = cursor.lastrowid
         
@@ -219,6 +221,38 @@ def login(user_data: UserLogin):
         
     token = create_access_token(data={"sub": user["username"], "id": user["id"]})
     return {"access_token": token, "token_type": "bearer", "username": user["username"]}
+
+class ForgotHintRequest(BaseModel):
+    username: str
+
+@app.post("/api/auth/forgot-hint")
+def get_forgot_hint(req: ForgotHintRequest):
+    username = req.username.strip()
+    if not username:
+        raise HTTPException(status_code=400, detail="Please enter your username")
+        
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT username, password_hint FROM users WHERE username = ?", (username,))
+    row = cursor.fetchone()
+    conn.close()
+    
+    if not row:
+        raise HTTPException(status_code=404, detail="No account found with that username")
+        
+    hint = row["password_hint"]
+    if not hint:
+        return {
+            "status": "ok",
+            "username": username,
+            "hint": "No hint available for this account. Please create a new account or sign in."
+        }
+        
+    return {
+        "status": "ok",
+        "username": username,
+        "hint": hint
+    }
 
 @app.get("/api/auth/me")
 def get_me(current_user: dict = Depends(get_current_user)):

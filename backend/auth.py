@@ -21,6 +21,23 @@ def hash_password(password: str) -> str:
     hashed = bcrypt.hashpw(password.encode("utf-8"), salt)
     return hashed.decode("utf-8")
 
+def generate_password_hint(password: str) -> str:
+    """Creates a hint showing first 2 and last 2 characters (e.g. 'se••••••et')."""
+    if not password:
+        return ""
+    p_len = len(password)
+    bullet = "*"
+    if p_len <= 3:
+        return password[0] + bullet * (p_len - 1)
+    elif p_len <= 5:
+        # Show 1st and last
+        dots = bullet * (p_len - 2)
+        return f"{password[0]}{dots}{password[-1]}"
+    else:
+        # Show first 2 and last 2
+        dots = bullet * (p_len - 4)
+        return f"{password[:2]}{dots}{password[-2:]}"
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
         return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))

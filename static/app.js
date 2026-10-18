@@ -232,6 +232,50 @@ function switchAuthForm(formType) {
     }
 }
 
+async function fetchPasswordHint() {
+    const uInput = document.getElementById("login-username");
+    const username = uInput ? uInput.value.trim() : "";
+    if (!username) {
+        showToast("Please enter your username first to get a password hint.", "error");
+        if (uInput) uInput.focus();
+        return;
+    }
+
+    const btn = document.getElementById("forgot-hint-btn");
+    const origHtml = btn ? btn.innerHTML : "";
+    if (btn) {
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Checking...`;
+    }
+
+    try {
+        const res = await apiRequest("/auth/forgot-hint", {
+            method: "POST",
+            body: JSON.stringify({ username: username })
+        });
+
+        const hintBox = document.getElementById("password-hint-box");
+        const hintUser = document.getElementById("hint-username-span");
+        const hintBadge = document.getElementById("hint-badge-code");
+
+        if (hintBox && hintUser && hintBadge) {
+            hintUser.textContent = res.username;
+            hintBadge.textContent = res.hint;
+            hintBox.classList.remove("d-none");
+            hintBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        showToast("Password hint retrieved!", "success");
+    } catch (err) {
+        showToast(err.message || "Could not retrieve password hint.", "error");
+    } finally {
+        if (btn) btn.innerHTML = origHtml;
+    }
+}
+
+function hidePasswordHint() {
+    const hintBox = document.getElementById("password-hint-box");
+    if (hintBox) hintBox.classList.add("d-none");
+}
+
 function togglePasswordVisibility(inputId, btn) {
     const input = document.getElementById(inputId);
     const icon = btn.querySelector("i");

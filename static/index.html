@@ -30,7 +30,7 @@
     <link rel="apple-touch-icon" sizes="512x512" href="app_icon.png">
     
     <!-- Custom Stylesheet (with cache-busting version) -->
-    <link rel="stylesheet" href="style.css?v=4.3">
+    <link rel="stylesheet" href="style.css?v=4.4">
 </head>
 <body class="theme-light">
 
@@ -107,10 +107,31 @@
                         <div class="invalid-feedback">Please enter your password.</div>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="form-check custom-checkbox">
                             <input class="form-check-input" type="checkbox" id="remember-me" checked>
                             <label class="form-check-label" for="remember-me">Remember session</label>
+                        </div>
+                        <a href="javascript:void(0)" onclick="fetchPasswordHint()" class="forgot-link" id="forgot-hint-btn">
+                            <i class="fa-regular fa-circle-question me-1"></i>Forgot password?
+                        </a>
+                    </div>
+
+                    <!-- Password Hint Box (hidden by default) -->
+                    <div id="password-hint-box" class="forgot-hint-box d-none">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="small fw-bold text-primary mb-1">
+                                    <i class="fa-solid fa-key me-1"></i>Password Reminder
+                                </div>
+                                <div class="small text-muted mb-1" id="hint-text-message">
+                                    Password clue for <span class="fw-bold" id="hint-username-span"></span>:
+                                </div>
+                                <div class="forgot-hint-badge" id="hint-badge-code">
+                                    --••••--
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close btn-close-sm" onclick="hidePasswordHint()" aria-label="Close"></button>
                         </div>
                     </div>
 
@@ -1672,6 +1693,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Application Logic (with cache-busting version) -->
-    <script src="app.js?v=4.4"></script>
+    <script src="app.js?v=4.5"></script>
 </body>
 </html>
