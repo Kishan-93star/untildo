@@ -192,9 +192,11 @@ def register(user_data: UserRegister):
             (user_id, username, "Excel in all upcoming exams and coursework")
         )
         conn.commit()
-    except sqlite3.IntegrityError:
+    except Exception as e:
         conn.close()
-        raise HTTPException(status_code=400, detail="Username already exists")
+        if "unique" in str(e).lower() or "integrity" in str(e).lower():
+            raise HTTPException(status_code=400, detail="Username already exists")
+        raise HTTPException(status_code=500, detail=f"Registration error: {str(e)}")
     
     conn.close()
     
