@@ -318,17 +318,33 @@ function checkPasswordStrength(password) {
 }
 
 function confirmLogout() {
-    const modalEl = document.getElementById("confirmModal");
-    const modal = new bootstrap.Modal(modalEl);
-    document.getElementById("confirm-modal-title").textContent = "Log Out";
-    document.getElementById("confirm-modal-desc").textContent = "Are you sure you want to sign out?";
-    
-    const actionBtn = document.getElementById("confirm-modal-action-btn");
-    actionBtn.onclick = () => {
-        modal.hide();
+    try {
+        const modalEl = document.getElementById("confirmModal");
+        if (modalEl && window.bootstrap && window.bootstrap.Modal) {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            const titleEl = document.getElementById("confirm-modal-title");
+            const descEl = document.getElementById("confirm-modal-desc");
+            const actionBtn = document.getElementById("confirm-modal-action-btn");
+            
+            if (titleEl) titleEl.textContent = "Log Out";
+            if (descEl) descEl.textContent = "Are you sure you want to sign out of UntilDo?";
+            if (actionBtn) {
+                actionBtn.onclick = () => {
+                    modal.hide();
+                    logout();
+                };
+            }
+            modal.show();
+            return;
+        }
+    } catch (e) {
+        console.warn("Bootstrap modal error:", e);
+    }
+
+    // Direct confirmation fallback if modal fails to open
+    if (confirm("Are you sure you want to sign out?")) {
         logout();
-    };
-    modal.show();
+    }
 }
 
 function logout() {
@@ -336,6 +352,13 @@ function logout() {
     currentToken = null;
     localStorage.removeItem("untildo_token");
     localStorage.removeItem("aether_token");
+    
+    // Reset form fields
+    const loginUser = document.getElementById("login-username");
+    const loginPass = document.getElementById("login-password");
+    if (loginUser) loginUser.value = "";
+    if (loginPass) loginPass.value = "";
+    
     showAuth(true);
     showToast("Signed out successfully.", "info");
 }
