@@ -2170,6 +2170,22 @@ body.theme-light .form-floating > .form-control.custom-input:not(:placeholder-sh
     transition: all 0.2s;
 }
 
+body.compact-task-mode .task-item-card {
+    padding: 6px 10px;
+    gap: 8px;
+}
+body.compact-task-mode .task-title-text {
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+body.compact-task-mode .task-priority-icon {
+    font-size: 1rem;
+}
+body.compact-task-mode .task-meta-row {
+    margin-top: 2px !important;
+}
+
+
 /* Subtle Priority Box Colors & Synchronized Subtle Pulse */
 /* Distinct Animated Priority Boxes (Glows & Breathes with Priority Icon) */
 .task-item-card.priority-box-high {

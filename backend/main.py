@@ -70,6 +70,14 @@ class UserProfileUpdate(BaseModel):
     study_goal: Optional[str] = "Mastering key topics daily"
     target_hours_week: Optional[float] = 15.0
 
+class UpdateUsernameRequest(BaseModel):
+    new_username: str
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+
 class NoteCreate(BaseModel):
     title: str
     content: str
@@ -294,6 +302,68 @@ def update_user_profile(data: UserProfileUpdate, current_user: dict = Depends(ge
     conn.commit()
     conn.close()
     return {"message": "Profile updated successfully"}
+
+@app.put("/api/user/username")
+def update_username(req: UpdateUsernameRequest, current_user: dict = Depends(get_current_user)):
+    new_username = req.new_username.strip()
+    if len(new_username) < 3:
+        raise HTTPException(status_code=400, detail="Username must be at least 3 characters long")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Check if username is already taken by another user
+    cursor.execute("SELECT id FROM users WHERE username = ? AND id != ?", (new_username, current_user["id"]))
+    existing = cursor.fetchone()
+    if existing:
+        conn.close()
+        raise HTTPException(status_code=400, detail="That username is already taken")
+
+    try:
+        cursor.execute("UPDATE users SET username = ? WHERE id = ?", (new_username, current_user["id"]))
+        conn.commit()
+    except Exception as e:
+        conn.close()
+        raise HTTPException(status_code=500, detail=f"Failed to update username: {str(e)}")
+    conn.close()
+
+    new_token = create_access_token(data={"sub": new_username, "id": current_user["id"]})
+    return {
+        "status": "ok",
+        "message": "Username changed successfully",
+        "username": new_username,
+        "access_token": new_token
+    }
+
+@app.put("/api/user/password")
+def change_password(req: ChangePasswordRequest, current_user: dict = Depends(get_current_user)):
+    cur_pwd = req.current_password
+    new_pwd = req.new_password
+    
+    if len(new_pwd) < 4:
+        raise HTTPException(status_code=400, detail="New password must be at least 4 characters long")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT password_hash FROM users WHERE id = ?", (current_user["id"],))
+    user = cursor.fetchone()
+    if not user or not verify_password(cur_pwd, user["password_hash"]):
+        conn.close()
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+
+    new_hash = hash_password(new_pwd)
+    new_hint = generate_password_hint(new_pwd)
+    
+    try:
+        cursor.execute("UPDATE users SET password_hash = ?, password_hint = ? WHERE id = ?", (new_hash, new_hint, current_user["id"]))
+        conn.commit()
+    except Exception as e:
+        conn.close()
+        raise HTTPException(status_code=500, detail=f"Failed to update password: {str(e)}")
+    conn.close()
+
+    return {"status": "ok", "message": "Password updated successfully"}
+
 
 # ==========================================
 # DOCUMENT ENDPOINTS

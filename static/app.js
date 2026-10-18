@@ -4434,6 +4434,71 @@ async function handleProfileSave(e) {
     }
 }
 
+async function handleUpdateUsername() {
+    const input = document.getElementById("input-change-username");
+    const newUsername = input ? input.value.trim() : "";
+    if (newUsername.length < 3) {
+        showToast("Username must be at least 3 characters long.", "error");
+        if (input) input.focus();
+        return;
+    }
+
+    try {
+        const res = await apiRequest("/user/username", {
+            method: "PUT",
+            body: JSON.stringify({ new_username: newUsername })
+        });
+
+        if (res.access_token) {
+            currentToken = res.access_token;
+            localStorage.setItem("aether_token", currentToken);
+            localStorage.setItem("untildo_token", currentToken);
+        }
+        if (currentUser) currentUser.username = newUsername;
+
+        updateUserUI();
+        loadUserProfile();
+        if (input) input.value = "";
+        showToast("Username successfully updated!", "success");
+    } catch (err) {
+        showToast(err.message || "Failed to update username.", "error");
+    }
+}
+
+async function handleChangePassword() {
+    const curInput = document.getElementById("input-current-password");
+    const newInput = document.getElementById("input-new-password");
+    const currentPassword = curInput ? curInput.value : "";
+    const newPassword = newInput ? newInput.value : "";
+
+    if (!currentPassword) {
+        showToast("Please enter your current password.", "error");
+        if (curInput) curInput.focus();
+        return;
+    }
+    if (newPassword.length < 4) {
+        showToast("New password must be at least 4 characters long.", "error");
+        if (newInput) newInput.focus();
+        return;
+    }
+
+    try {
+        await apiRequest("/user/password", {
+            method: "PUT",
+            body: JSON.stringify({
+                current_password: currentPassword,
+                new_password: newPassword
+            })
+        });
+
+        if (curInput) curInput.value = "";
+        if (newInput) newInput.value = "";
+        showToast("Password updated successfully!", "success");
+    } catch (err) {
+        showToast(err.message || "Failed to change password.", "error");
+    }
+}
+
 // ==========================================
 // SETTINGS CONTROLLER
 // ==========================================
@@ -4442,6 +4507,64 @@ function loadSettings() {
     const key = getGeminiKey();
     const input = document.getElementById("settings-gemini-key");
     if (input) input.value = key;
+
+    // Load switch states from localStorage
+    const autoCarry = localStorage.getItem("untildo_auto_carry") !== "false";
+    const elAuto = document.getElementById("setting-auto-carry-default");
+    if (elAuto) elAuto.checked = autoCarry;
+
+    const soundEff = localStorage.getItem("untildo_sound_effects") !== "false";
+    const elSound = document.getElementById("setting-sound-effects");
+    if (elSound) elSound.checked = soundEff;
+
+    const compactView = localStorage.getItem("untildo_compact_cards") === "true";
+    const elCompact = document.getElementById("setting-compact-cards");
+    if (elCompact) {
+        elCompact.checked = compactView;
+        toggleCompactTaskCards(compactView);
+    }
+}
+
+function saveAppSetting(key, val) {
+    if (key === "auto_carry_default") {
+        localStorage.setItem("untildo_auto_carry", val);
+        showToast(val ? "Default Auto-Carry enabled." : "Auto-Carry disabled for future tasks.", "info");
+    } else if (key === "sound_effects") {
+        localStorage.setItem("untildo_sound_effects", val);
+        showToast(val ? "Haptic / audio feedback enabled." : "Haptic / audio feedback muted.", "info");
+    } else if (key === "compact_cards") {
+        localStorage.setItem("untildo_compact_cards", val);
+    }
+}
+
+function toggleCompactTaskCards(isCompact) {
+    const root = document.documentElement;
+    if (isCompact) {
+        document.body.classList.add("compact-task-mode");
+    } else {
+        document.body.classList.remove("compact-task-mode");
+    }
+}
+
+function clearLocalAppCache() {
+    const keepToken = localStorage.getItem("untildo_token") || localStorage.getItem("aether_token");
+    const keepTheme = localStorage.getItem("untildo_theme");
+    const keepGemini = localStorage.getItem("gemini_api_key");
+
+    localStorage.clear();
+
+    if (keepToken) {
+        localStorage.setItem("untildo_token", keepToken);
+        localStorage.setItem("aether_token", keepToken);
+    }
+    if (keepTheme) localStorage.setItem("untildo_theme", keepTheme);
+    if (keepGemini) localStorage.setItem("gemini_api_key", keepGemini);
+
+    cachedTasks = [];
+    cachedNotes = [];
+    cachedDocuments = [];
+    showToast("Offline cache cleared and synchronized!", "success");
+    loadPlannerData();
 }
 
 // ==========================================

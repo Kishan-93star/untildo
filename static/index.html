@@ -30,7 +30,7 @@
     <link rel="apple-touch-icon" sizes="512x512" href="app_icon.png">
     
     <!-- Custom Stylesheet (with cache-busting version) -->
-    <link rel="stylesheet" href="style.css?v=4.4">
+    <link rel="stylesheet" href="style.css?v=4.5">
 </head>
 <body class="theme-light">
 
@@ -358,10 +358,6 @@
                         <span class="streak-count-label">d streak</span>
                     </div>
 
-                    <div class="model-status-chip glassmorphism" id="gemini-status-chip">
-                        <span class="status-dot"></span>
-                        <span id="gemini-status-text">Local NLP Engine</span>
-                    </div>
                     <button class="btn-icon-nav" onclick="toggleTheme()" title="Toggle Theme">
                         <i class="fa-solid fa-sun light-icon"></i>
                         <i class="fa-solid fa-moon dark-icon"></i>
@@ -1266,8 +1262,14 @@
                     </div>
 
                     <div class="col-12 col-lg-8">
-                        <div class="card-panel glassmorphism h-100">
-                            <h3 class="panel-title mb-3"><i class="fa-solid fa-id-card text-accent-blue me-2"></i>Profile Details</h3>
+                        <!-- Profile Details Card -->
+                        <div class="card-panel glassmorphism mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="panel-title mb-0"><i class="fa-solid fa-id-card text-accent-blue me-2"></i>Profile Details</h3>
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmLogout()">
+                                    <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Sign Out
+                                </button>
+                            </div>
                             
                             <form id="profile-edit-form">
                                 <div class="row g-3 mb-3">
@@ -1296,6 +1298,46 @@
                                 </button>
                             </form>
                         </div>
+
+                        <!-- Account & Security Card (Edit Username & Change Password) -->
+                        <div class="card-panel glassmorphism">
+                            <h3 class="panel-title mb-3"><i class="fa-solid fa-user-shield text-accent-emerald me-2"></i>Account & Security</h3>
+                            <div class="row g-4">
+                                <!-- Change Username Form -->
+                                <div class="col-12 col-md-6">
+                                    <div class="p-3 rounded border border-secondary border-opacity-25 h-100">
+                                        <h5 class="fw-bold fs-6 mb-2"><i class="fa-solid fa-pen me-2 text-accent-blue"></i>Change Username</h5>
+                                        <p class="text-muted small mb-3">Your unique login identity.</p>
+                                        <div class="mb-3">
+                                            <label class="form-label small" for="input-change-username">New Username</label>
+                                            <input type="text" class="form-control custom-input" id="input-change-username" placeholder="min 3 characters">
+                                        </div>
+                                        <button type="button" class="btn btn-glass btn-sm w-100 fw-bold" onclick="handleUpdateUsername()">
+                                            <i class="fa-solid fa-user-check me-1"></i>Update Username
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Change Password Form -->
+                                <div class="col-12 col-md-6">
+                                    <div class="p-3 rounded border border-secondary border-opacity-25 h-100">
+                                        <h5 class="fw-bold fs-6 mb-2"><i class="fa-solid fa-key me-2 text-warning"></i>Change Password</h5>
+                                        <p class="text-muted small mb-3">Update your secure login password.</p>
+                                        <div class="mb-2 position-relative">
+                                            <label class="form-label small" for="input-current-password">Current Password</label>
+                                            <input type="password" class="form-control custom-input" id="input-current-password" placeholder="••••••••">
+                                        </div>
+                                        <div class="mb-3 position-relative">
+                                            <label class="form-label small" for="input-new-password">New Password</label>
+                                            <input type="password" class="form-control custom-input" id="input-new-password" placeholder="min 4 characters">
+                                        </div>
+                                        <button type="button" class="btn btn-glass btn-sm w-100 fw-bold" onclick="handleChangePassword()">
+                                            <i class="fa-solid fa-shield-halved me-1"></i>Update Password
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1304,8 +1346,8 @@
             <section id="tab-settings" class="content-tab-panel">
                 <div class="panel-header-row mb-4">
                     <div>
-                        <h1 class="panel-main-title">Portal Settings</h1>
-                        <p class="panel-main-sub">Configure AI model connectors, theme preferences, and system diagnostics.</p>
+                        <h1 class="panel-main-title">Portal Settings & Preferences</h1>
+                        <p class="panel-main-sub">Configure AI intelligence, theme preferences, daily task behavior, and data storage.</p>
                     </div>
                 </div>
 
@@ -1313,11 +1355,11 @@
                     <!-- AI API Configuration Card -->
                     <div class="col-12 col-lg-6">
                         <div class="card-panel glassmorphism h-100">
-                            <h3 class="panel-title mb-3"><i class="fa-solid fa-key text-accent-purple me-2"></i>Google Gemini API Integration</h3>
-                            <p class="text-muted small mb-4">Optional: Connect your personal Gemini API key for advanced generative reasoning. If left empty, UntilDo runs completely on built-in offline NLP models.</p>
+                            <h3 class="panel-title mb-3"><i class="fa-solid fa-key text-accent-purple me-2"></i>Google Gemini AI Integration</h3>
+                            <p class="text-muted small mb-4">Connect your personal Gemini API key for advanced generative reasoning. If empty, UntilDo runs completely on built-in offline NLP models.</p>
 
                             <div class="mb-3">
-                                <label class="form-label" for="settings-gemini-key">Gemini API Key (Stored in LocalStorage)</label>
+                                <label class="form-label" for="settings-gemini-key">Gemini API Key (Saved in browser)</label>
                                 <div class="input-group">
                                     <span class="input-group-text custom-addon"><i class="fa-solid fa-lock"></i></span>
                                     <input type="password" class="form-control custom-input" id="settings-gemini-key" placeholder="AIzaSy...">
@@ -1325,7 +1367,7 @@
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                 </div>
-                                <span class="form-text text-muted small">Your key is kept safe and never transmitted to third parties.</span>
+                                <span class="form-text text-muted small">Your key is never sent to third-party servers.</span>
                             </div>
 
                             <button type="button" class="btn btn-primary-gradient px-4 py-2" id="btn-save-gemini-key" onclick="saveGeminiKey()">
@@ -1340,17 +1382,79 @@
                             <h3 class="panel-title mb-3"><i class="fa-solid fa-palette text-accent-blue me-2"></i>Appearance & Theme</h3>
                             <p class="text-muted small mb-4">Switch between sleek Glassmorphic Dark Mode and clean Bright Light Mode.</p>
 
-                            <div class="theme-selection-grid mb-4">
+                            <div class="theme-selection-grid mb-3">
                                 <button type="button" class="theme-choice-card" id="theme-btn-dark" onclick="setTheme('dark')">
                                     <i class="fa-solid fa-moon theme-choice-icon"></i>
                                     <h4>Dark Mode</h4>
                                     <p>Vibrant glowing glassmorphism</p>
-                                								</button>
+                                </button>
                                 <button type="button" class="theme-choice-card active" id="theme-btn-light" onclick="setTheme('light')">
                                     <i class="fa-solid fa-sun theme-choice-icon"></i>
                                     <h4>Light Mode</h4>
                                     <p>High contrast daytime clarity</p>
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Task & Rollover Settings Card -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card-panel glassmorphism h-100">
+                            <h3 class="panel-title mb-3"><i class="fa-solid fa-arrows-rotate text-accent-emerald me-2"></i>Daily Rollover Behavior</h3>
+                            <p class="text-muted small mb-3">Control how incomplete items carry forward when a new day arrives.</p>
+
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="setting-auto-carry-default" checked onchange="saveAppSetting('auto_carry_default', this.checked)">
+                                <label class="form-check-label fw-semibold" for="setting-auto-carry-default">
+                                    Auto-Carry Forward Incomplete Tasks
+                                </label>
+                                <div class="text-muted small">Incomplete daily items automatically roll over until marked done.</div>
+                            </div>
+
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="setting-sound-effects" checked onchange="saveAppSetting('sound_effects', this.checked)">
+                                <label class="form-check-label fw-semibold" for="setting-sound-effects">
+                                    Task Completion Audio & Vibration
+                                </label>
+                                <div class="text-muted small">Play subtle celebratory haptic feedback when completing milestones.</div>
+                            </div>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="setting-compact-cards" onchange="saveAppSetting('compact_cards', this.checked); toggleCompactTaskCards(this.checked)">
+                                <label class="form-check-label fw-semibold" for="setting-compact-cards">
+                                    Compact Task View
+                                </label>
+                                <div class="text-muted small">Reduces task item padding for power users with many daily checklist items.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session & Data Management Card -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card-panel glassmorphism h-100">
+                            <h3 class="panel-title mb-3"><i class="fa-solid fa-database text-warning me-2"></i>Session & Local Cache</h3>
+                            <p class="text-muted small mb-3">Manage local storage cache and active session credentials.</p>
+
+                            <div class="d-flex flex-column gap-2 mb-4">
+                                <div class="p-3 rounded border border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold">Clear Local Storage Cache</div>
+                                        <div class="text-muted small">Refreshes offline draft cache without deleting cloud database items.</div>
+                                    </div>
+                                    <button type="button" class="btn btn-glass btn-sm" onclick="clearLocalAppCache()">
+                                        <i class="fa-solid fa-broom me-1"></i>Clear Cache
+                                    </button>
+                                </div>
+
+                                <div class="p-3 rounded border border-danger border-opacity-25 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold text-danger">Sign Out from Device</div>
+                                        <div class="text-muted small">Clears local access token and returns to login screen.</div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmLogout()">
+                                        <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Sign Out
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1693,6 +1797,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Application Logic (with cache-busting version) -->
-    <script src="app.js?v=4.5"></script>
+    <script src="app.js?v=4.6"></script>
 </body>
 </html>
